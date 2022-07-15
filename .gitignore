@@ -1,0 +1,9 @@
+.vscode
+/Logs/
+/Temp/
+/Library/
+/obj/
+*.sln
+*.csproj
+BuildWebGL/
+*.zip
