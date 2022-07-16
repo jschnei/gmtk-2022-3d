@@ -14,6 +14,11 @@ public class DieController : MonoBehaviour
 
     [SerializeField] private int spawnX;
     [SerializeField] private int spawnY;
+    [SerializeField] private int playerType;
+
+    public const int PTYPE_PLAYER_ONE = 1;
+    public const int PTYPE_PLAYER_TWO = 2;
+    public const int PTYPE_ENEMY = 3;
 
     private int id;
     private bool _isMoving;
@@ -32,12 +37,18 @@ public class DieController : MonoBehaviour
     public const int INPUT_RIGHT = 3;
     public const int INPUT_ACTIVATE = 4;
 
+    public const int INPUT_RED_ATTACK_1 = 10;
+    public const int INPUT_RED_ATTACK_2 = 11;
+    public const int INPUT_RED_ATTACK_3 = 12;
+
     public bool IsMoving() {
         return _isMoving;
     }
 
     public void HandleInput(int input) {
         if (_isMoving) return;
+
+        if (input == -1) return;
 
         switch(input) {
             case INPUT_LEFT:
@@ -54,6 +65,10 @@ public class DieController : MonoBehaviour
                 break;
             case INPUT_ACTIVATE:
                 _gameController.ActivatePowerup(id);
+                break;
+            
+            default:
+                _gameController.EnemyAttack(input, id);
                 break;
         }
 
@@ -81,6 +96,7 @@ public class DieController : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         _isMoving = false;
+        _gameController.FinishRoll(id);
     }
 
     private void MoveToSquare(int squareX, int squareY) {
@@ -104,5 +120,9 @@ public class DieController : MonoBehaviour
 
     public void UnapplyPowerup(int face) {
         transform.Find("Face" + face).GetComponent<Renderer>().material = _standardMaterials[face];
+    }
+
+    public void Die() {
+        Destroy(this.gameObject);
     }
 }
