@@ -5,8 +5,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
-    [SerializeField] private GameController gameController;
-    [SerializeField] private GameObject _floor;
+    [SerializeField] private GameController _gameController;
+    [SerializeField] private FloorController _floorController;
     [SerializeField] private GameObject _projectile;
 
     private bool _isMoving;
@@ -24,16 +24,16 @@ public class PlayerController : MonoBehaviour
 
         // Get movement input
         if (Input.GetKey(KeyCode.A)) {
-            if (gameController.PlayerRoll(GameController.DIR_LEFT)) Assemble(Vector3.left);
+            if (_gameController.PlayerRoll(GameController.DIR_LEFT)) Assemble(Vector3.left);
         }
         else if (Input.GetKey(KeyCode.D)){
-            if (gameController.PlayerRoll(GameController.DIR_RIGHT)) Assemble(Vector3.right);
+            if (_gameController.PlayerRoll(GameController.DIR_RIGHT)) Assemble(Vector3.right);
         }
         else if (Input.GetKey(KeyCode.W)) {
-            if (gameController.PlayerRoll(GameController.DIR_UP)) Assemble(Vector3.forward);
+            if (_gameController.PlayerRoll(GameController.DIR_UP)) Assemble(Vector3.forward);
         } 
         else if (Input.GetKey(KeyCode.S)) {
-            if (gameController.PlayerRoll(GameController.DIR_DOWN)) Assemble(Vector3.back);
+            if (_gameController.PlayerRoll(GameController.DIR_DOWN)) Assemble(Vector3.back);
         } 
 
         if (_isMoving) return;
@@ -62,9 +62,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MoveToSquare(int squareX, int squareY) {
-        if (gameController.MovePlayerToSquare(squareX, squareY)) {
-            Vector3 floorBackLeft = _floor.transform.position + (5.0f) * _floor.transform.localScale.x * Vector3.left + (5.0f) * _floor.transform.localScale.z * Vector3.forward;
-            transform.position = floorBackLeft + squareX * Vector3.right + squareY * Vector3.back  + (0.5f) * Vector3.up + (0.5f) * Vector3.right + (0.5f) * Vector3.back;
+        if (_gameController.MovePlayerToSquare(squareX, squareY)) {
+            transform.position = _floorController.GetSquareCenter(squareX, squareY) + (0.5f) * Vector3.up;
         }
     }
 

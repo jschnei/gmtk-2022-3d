@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DieState {
-    const bool VERBOSE = true;
+    const bool VERBOSE = false;
 
     public int posX = 0;
     public int posY = 0;
@@ -77,6 +77,16 @@ public class DieState {
     }
 }
 
+public class Tile {
+    public int x, y, value;
+
+    public Tile(int x, int y, int value) {
+        this.x = x;
+        this.y = y;
+        this.value = value;
+    }
+}
+
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
@@ -91,18 +101,41 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
     private DieState _playerDie;
-    // Start is called before the first frame update
+
+    // tileState:
+    //  -1 = impassable (i.e., wall)
+    //  0 = regular tile
+    //  1-6 = powerup (with this label)
+    private int[,] tileStates;
+
     void Start()
     {
+        tileStates = new int[GRID_SIZE, GRID_SIZE];
         _playerDie = new DieState();
     }
 
-    public bool isValidSquare(int x, int y) {
-        return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE);
+    public const int SPAWN_RETRIES = 10;
+    public Tile SpawnPowerup() {
+        for (int i=0; i<SPAWN_RETRIES; i++) {
+            int randX = (int)(Random.value * GRID_SIZE);
+            int randY = (int)(Random.value * GRID_SIZE);
+
+            if (tileStates[randY, randX] == 0) {
+                int randVal = (int)(Random.value * 6) + 1;
+                tileStates[randY, randX] = randVal;
+
+                return new Tile(randX, randY, randVal);
+            }
+        }
+
+        return new Tile(-1, -1, -1);
+    }
+
+    bool isValidSquare(int x, int y) {
+        return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE && tileStates[y,x] != -1);
     }
 
     public bool MovePlayerToSquare(int x, int y) {
-        // todo: check if square is valid
         if (!isValidSquare(x, y)) return false;
 
         _playerDie.SetPosition(x,  y);

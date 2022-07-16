@@ -536,8 +536,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rollSpeed: 5
-  gameController: {fileID: 3385918}
-  _floor: {fileID: 2102572138}
+  _gameController: {fileID: 3385918}
+  _floorController: {fileID: 2102572143}
   _projectile: {fileID: 4930401841867257341, guid: 56d623b0c8a2b034dbd73c5fc6afdfe9, type: 3}
 --- !u!1 &786455466
 GameObject:
@@ -958,6 +958,7 @@ GameObject:
   - component: {fileID: 2102572141}
   - component: {fileID: 2102572140}
   - component: {fileID: 2102572139}
+  - component: {fileID: 2102572143}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
@@ -1042,3 +1043,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2102572143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102572138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 067b40cd51c30cb40b49f2bcc6c1cd24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameController: {fileID: 3385918}
+  _powerupPrefab: {fileID: 2423062814266964616, guid: bba7677bb3155b84a97669291db02653, type: 3}
