@@ -111,7 +111,7 @@ public class Tile {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private PlayerController _playerController;
+    [SerializeField] private PlayerController[] _playerController;
     [SerializeField] private FloorController _floorController;
 
     public const int GRID_SIZE = 20;
@@ -124,7 +124,7 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_X = {0, 0, -1, 1};
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
-    private DieState _playerDie;
+    private DieState[] _playerDie = new DieState[2];
 
     public List<DieState> _enemyDice;
 
@@ -143,7 +143,8 @@ public class GameController : MonoBehaviour
         for (int i=0; i<17; i++) {
             tileStates[i, 5] = -1;
         }
-        _playerDie = new DieState();
+        _playerDie[0] = new DieState();
+        _playerDie[1] = new DieState();
         _enemyDice = new List<DieState>();
     }
 
@@ -177,89 +178,90 @@ public class GameController : MonoBehaviour
         _floorController.SpawnEnemy(x, y);
     }
 
+    // TODO: check collision between different players
     bool isValidSquare(int x, int y) {
         return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE && tileStates[y,x] != -1);
     }
 
     // TODO: support multiple DieStates
-    public bool MovePlayerToSquare(int x, int y) {
+    public bool MovePlayerToSquare(int x, int y, int p) {
         if (!isValidSquare(x, y)) return false;
 
-        _playerDie.SetPosition(x,  y);
+        _playerDie[p].SetPosition(x,  y);
 
         return true;
     }
 
-    public bool PlayerRoll(int dir) {
-        int nX = _playerDie.posX + DELTA_X[dir];
-        int nY = _playerDie.posY + DELTA_Y[dir];
+    public bool PlayerRoll(int dir, int p) {
+        int nX = _playerDie[p].posX + DELTA_X[dir];
+        int nY = _playerDie[p].posY + DELTA_Y[dir];
 
         if (!isValidSquare(nX, nY)) return false;
 
         switch (dir) {
             case DIR_UP:
-                _playerDie.RollUp();
+                _playerDie[p].RollUp();
                 break;
             
             case DIR_DOWN:
-                _playerDie.RollDown();
+                _playerDie[p].RollDown();
                 break;
             
             case DIR_LEFT:
-                _playerDie.RollLeft();
+                _playerDie[p].RollLeft();
                 break;
             
             case DIR_RIGHT:
-                _playerDie.RollRight();
+                _playerDie[p].RollRight();
                 break;
         }
 
-        CheckPowerup();
-        _floorController.UpdateTargets();
+        CheckPowerup(p);
+        _floorController.UpdateTargets(p);
 
         return true;
     }
 
-    public void CheckPowerup() {
-        if (_playerDie.GetBottom() == tileStates[_playerDie.posY, _playerDie.posX]) {
-            _floorController.RemovePowerup(_playerDie.posX, _playerDie.posY);
+    public void CheckPowerup(int i) {
+        if (_playerDie[i].GetBottom() == tileStates[_playerDie[i].posY, _playerDie[i].posX]) {
+            _floorController.RemovePowerup(_playerDie[i].posX, _playerDie[i].posY);
 
-            int puVal = _playerDie.GetBottom();
+            int puVal = _playerDie[i].GetBottom();
 
-            if (!_playerDie.powered[puVal]) {
-                _playerController.ApplyPowerup(puVal);
-                _playerDie.PowerupFace(puVal);
+            if (!_playerDie[i].powered[puVal]) {
+                _playerController[i].ApplyPowerup(puVal);
+                _playerDie[i].PowerupFace(puVal);
             }
         }
     }
 
-    public void ActivatePowerup() {
-        if (!IsTopActive()) return;
-        _playerController.UnapplyPowerup(_playerDie.GetTop());
-        _playerDie.PowerdownFace(_playerDie.GetTop());
-        _floorController.UpdateTargets();
-        _floorController.ExplodeTiles(GetTiles(_playerDie.GetTop()));
+    public void ActivatePowerup(int p) {
+        if (!IsTopActive(p)) return;
+        _playerController[p].UnapplyPowerup(_playerDie[p].GetTop());
+        _playerDie[p].PowerdownFace(_playerDie[p].GetTop());
+        _floorController.UpdateTargets(p);
+        _floorController.ExplodeTiles(GetTiles(_playerDie[p].GetTop(), p));
     }
 
-    public bool IsTopActive() {
-        return _playerDie.IsPowered(_playerDie.GetTop());
+    public bool IsTopActive(int p) {
+        return _playerDie[p].IsPowered(_playerDie[p].GetTop());
     }
 
-    public bool IsTargetableSquare(int x, int y) {
-        if (!IsTopActive()) return false;
-        int xDelta = x - _playerDie.posX;
-        int yDelta = y - _playerDie.posY;
-        return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _playerDie.GetTop());
+    public bool IsTargetableSquare(int x, int y, int p) {
+        if (!IsTopActive(p)) return false;
+        int xDelta = x - _playerDie[p].posX;
+        int yDelta = y - _playerDie[p].posY;
+        return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _playerDie[p].GetTop());
     }
 
     // Gets all valid tiles at the given Manhattan
-    public List<Tile> GetTiles(int distance) {
+    public List<Tile> GetTiles(int distance, int p) {
         List<Tile> validTiles = new List<Tile>();
         for (int i = -distance; i <= distance; i++) {
             for (int j = -distance; j <= distance; j++) {
                 if (Mathf.Abs(i) + Mathf.Abs(j) != distance) continue;
-                int newX = _playerDie.posX + i;
-                int newY = _playerDie.posY + j;
+                int newX = _playerDie[p].posX + i;
+                int newY = _playerDie[p].posY + j;
                 if (!isValidSquare(newX, newY)) continue;
                 validTiles.Add(new Tile(newX, newY, 0));
             }

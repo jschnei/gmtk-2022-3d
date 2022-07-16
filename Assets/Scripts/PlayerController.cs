@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
+    [SerializeField] private int id;
     [SerializeField] private GameController _gameController;
     [SerializeField] private FloorController _floorController;
     [SerializeField] private GameObject _projectile;
@@ -17,7 +18,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MoveToSquare(1, 1);
+        MoveToSquare(id, id);
     }
 
     // Update is called once per frame
@@ -26,29 +27,46 @@ public class PlayerController : MonoBehaviour
         if (_isMoving) return;
 
         // Get movement input
-        if (Input.GetKey(KeyCode.A)) {
-            if (_gameController.PlayerRoll(GameController.DIR_LEFT)) Assemble(Vector3.left);
+        if (Input.GetKey(KeyCode.A) && id == 0) {
+            if (_gameController.PlayerRoll(GameController.DIR_LEFT, id)) Assemble(Vector3.left);
         }
-        else if (Input.GetKey(KeyCode.D)) {
-            if (_gameController.PlayerRoll(GameController.DIR_RIGHT)) Assemble(Vector3.right);
+        else if (Input.GetKey(KeyCode.D) && id == 0) {
+            if (_gameController.PlayerRoll(GameController.DIR_RIGHT, id)) Assemble(Vector3.right);
         }
-        else if (Input.GetKey(KeyCode.W)) {
-            if (_gameController.PlayerRoll(GameController.DIR_UP)) Assemble(Vector3.forward);
+        else if (Input.GetKey(KeyCode.W) && id == 0) {
+            if (_gameController.PlayerRoll(GameController.DIR_UP, id)) Assemble(Vector3.forward);
         } 
-        else if (Input.GetKey(KeyCode.S)) {
-            if (_gameController.PlayerRoll(GameController.DIR_DOWN)) Assemble(Vector3.back);
+        else if (Input.GetKey(KeyCode.S) && id == 0) {
+            if (_gameController.PlayerRoll(GameController.DIR_DOWN, id)) Assemble(Vector3.back);
         } 
 
         if (_isMoving) return;
 
         // Get projectile input
-        if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
-        else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
-        else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
-        else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
+        //if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
+        //else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
+        //else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
+        //else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
 
-        if (Input.GetKeyDown(KeyCode.E)) {
-            _gameController.ActivatePowerup();
+        if (Input.GetKeyDown(KeyCode.E) && id == 0) {
+            _gameController.ActivatePowerup(id);
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow) && id == 1) {
+            if (_gameController.PlayerRoll(GameController.DIR_LEFT, id)) Assemble(Vector3.left);
+        }
+        else if (Input.GetKey(KeyCode.RightArrow) && id == 1) {
+            if (_gameController.PlayerRoll(GameController.DIR_RIGHT, id)) Assemble(Vector3.right);
+        }
+        else if (Input.GetKey(KeyCode.UpArrow) && id == 1) {
+            if (_gameController.PlayerRoll(GameController.DIR_UP, id)) Assemble(Vector3.forward);
+        } 
+        else if (Input.GetKey(KeyCode.DownArrow) && id == 1) {
+            if (_gameController.PlayerRoll(GameController.DIR_DOWN, id)) Assemble(Vector3.back);
+        } 
+
+        if (Input.GetKeyDown(KeyCode.RightShift) && id == 1) {
+            _gameController.ActivatePowerup(id);
         }
  
         void Assemble(Vector3 dir) {
@@ -68,7 +86,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MoveToSquare(int squareX, int squareY) {
-        if (_gameController.MovePlayerToSquare(squareX, squareY)) {
+        if (_gameController.MovePlayerToSquare(squareX, squareY, id)) {
             transform.position = _floorController.GetSquareCenter(squareX, squareY) + (0.5f) * Vector3.up;
         }
     }
