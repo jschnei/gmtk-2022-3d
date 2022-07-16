@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E)) {
             _gameController.ActivatePowerup();
         }
-
  
         void Assemble(Vector3 dir) {
             var anchor = transform.position + (Vector3.down + dir) * 0.5f;

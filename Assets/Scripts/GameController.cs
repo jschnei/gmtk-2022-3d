@@ -126,15 +126,16 @@ public class GameController : MonoBehaviour
 
     private DieState _playerDie;
 
+    public List<DieState> _enemyDice;
+
     // tileState:
     //  -1 = impassable (i.e., wall)
     //  0 = regular tile
     //  1-6 = powerup (with this label)
+    //  10 = enemy
     public int[,] tileStates;
 
-
-    void Start()
-    {
+    void Awake() {
         tileStates = new int[GRID_SIZE, GRID_SIZE];
         // Set some arbitrary walls, eventually this should be passed in.
         tileStates[1, 8] = -1;
@@ -143,6 +144,12 @@ public class GameController : MonoBehaviour
             tileStates[i, 5] = -1;
         }
         _playerDie = new DieState();
+        _enemyDice = new List<DieState>();
+    }
+
+    void Start()
+    {
+        SpawnEnemy(10, 10);
     }
 
     public const int SPAWN_RETRIES = 10;
@@ -160,6 +167,14 @@ public class GameController : MonoBehaviour
         }
 
         return new Tile(-1, -1, -1);
+    }
+
+    public void SpawnEnemy(int x, int y) {
+        DieState enemyState = new DieState();
+        enemyState.SetPosition(x, y);
+        _enemyDice.Add(enemyState);
+        tileStates[y, x] = 10;
+        _floorController.SpawnEnemy(x, y);
     }
 
     bool isValidSquare(int x, int y) {

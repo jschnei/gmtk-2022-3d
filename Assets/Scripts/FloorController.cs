@@ -11,6 +11,7 @@ public class FloorController : MonoBehaviour
     [SerializeField] private GameObject _wallPrefab;
     [SerializeField] private GameObject _targetPrefab;
     [SerializeField] private GameObject _explosionPrefab;
+    [SerializeField] private GameObject _enemyPrefab;
 
     Timer _spawnTimer;
     public const int SPAWN_INTERVAL = 5;
@@ -18,13 +19,19 @@ public class FloorController : MonoBehaviour
     private GameObject[,] powerups;
     private GameObject[,] walls;
     private GameObject[,] targetIndicators;
-    // Start is called before the first frame update
-    void Start()
-    {
+    private GameObject[,] enemies;
+
+    void Awake() {
         _spawnTimer = new Timer(SPAWN_INTERVAL);
         powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
         walls = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
         targetIndicators = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        enemies = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
     }
 
     // Update is called once per frame
@@ -52,6 +59,16 @@ public class FloorController : MonoBehaviour
 
     public void RemovePowerup(int squareX, int squareY) {
         if (powerups[squareY, squareX] != null) Destroy(powerups[squareY, squareX]);
+    }
+
+    public void SpawnEnemy(int x, int y) {
+        GameObject newEnemy = Instantiate(_enemyPrefab, transform.position, Quaternion.identity);
+        newEnemy.transform.position = GetSquareCenter(x, y);
+        enemies[y, x] = newEnemy;
+    }
+
+    public void RemoveEnemy(int x, int y) {
+        if (enemies[y, x] != null) Destroy(enemies[y, x]);
     }
 
     // Uses tileStates to add or remove walls as needed.
