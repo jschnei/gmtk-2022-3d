@@ -155,6 +155,10 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_X = {0, 0, -1, 1};
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
+    // TODO: move to UI controller?
+    [SerializeField] private Image healthBarP1;
+    [SerializeField] private Image healthBarP2;
+
     private List<DieController> _dieControllers;
     private List<DieState> _dice;
 
@@ -404,7 +408,12 @@ public class GameController : MonoBehaviour
         if (_dice[p].isDead) return;
 
         _dice[p].GetHit();
-        _dieControllers[p].AdjustHealthbar(_dice[p].health);
+
+        AdjustHealthbar(_dieControllers[p].playerType, _dice[p].health);
+        // if (_dieControllers[p].playerType == DieController.PTYPE_PLAYER_ONE) {
+        //     AdjustHealthbar()
+        // }
+        // _dieControllers[p].AdjustHealthbar(_dice[p].health);
         Debug.Log("Die " + p + " hit! Health " + _dice[p].health);
 
         if (_dice[p].health == 0) {
@@ -434,5 +443,13 @@ public class GameController : MonoBehaviour
             }
         }
         return validTiles;
+    }
+
+    public void AdjustHealthbar(int ptype, int health) {
+        if (ptype == DieController.PTYPE_PLAYER_ONE) {
+            healthBarP1.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
+        } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
+            healthBarP2.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
+        }
     }
 }
