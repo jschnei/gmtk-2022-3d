@@ -5,8 +5,8 @@ using UnityEngine;
 public class DieState {
     const bool VERBOSE = false;
 
-    public int posX = 0;
-    public int posY = 0;
+    public int posX = -1;
+    public int posY = -1;
 
     // faces stored as [top, bottom, front, back, left, right]
     const int D_TOP = 0;
@@ -145,10 +145,6 @@ public class GameController : MonoBehaviour
 
         _dieControllers = new List<DieController>();
         _dice = new List<DieState>();
-
-        // _dice[0] = new DieState();
-        // _dice[1] = new DieState();
-        // _enemyDice = new List<DieState>();
     }
 
     public int RegisterDie(DieController controller) {
@@ -197,9 +193,14 @@ public class GameController : MonoBehaviour
     //     _floorController.SpawnEnemy(x, y);
     // }
 
-    // TODO: check collision between different players
     bool isValidSquare(int x, int y) {
-        return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE && tileStates[y,x] != -1);
+        if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE || tileStates[y,x] == -1) return false;
+
+        foreach (DieState die in _dice) {
+            if (die.posX == x && die.posY == y) return false;
+        }
+
+        return true;
     }
 
     public bool MovePlayerToSquare(int x, int y, int p) {
