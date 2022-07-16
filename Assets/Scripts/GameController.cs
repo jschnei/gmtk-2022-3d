@@ -208,8 +208,8 @@ public class GameController : MonoBehaviour
             int puVal = _playerDie.GetBottom();
 
             if (!_playerDie.powered[puVal]) {
-                _playerController.ApplyPowerup(_playerDie.GetBottom());
-                _playerDie.PowerupFace(_playerDie.GetBottom());
+                _playerController.ApplyPowerup(puVal);
+                _playerDie.PowerupFace(puVal);
             }
         }
     }
