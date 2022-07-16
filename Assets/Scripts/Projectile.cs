@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 1.0f;
+    public float speed = 3.0f;
 
     private Vector3 _destination;
 
@@ -16,6 +16,10 @@ public class Projectile : MonoBehaviour
     void Update() {
         var step = speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, _destination, step);
+
+        if (transform.position == _destination) {
+            Destroy(gameObject);
+        }
     }
 
     public void SetDestination(Vector3 destination) {
