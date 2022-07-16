@@ -9,6 +9,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FloorController _floorController;
     [SerializeField] private GameObject _projectile;
 
+    [SerializeField] private Material[] _standardMaterials;
+    [SerializeField] private Material[] _powerupMaterials;
+
     private bool _isMoving;
 
     // Start is called before the first frame update
@@ -72,5 +75,13 @@ public class PlayerController : MonoBehaviour
         Projectile newProjectile = newObject.GetComponent<Projectile>();
         Vector3 destination = transform.position + dir * 4; // actual dice number should go here
         newProjectile.SetDestination(destination);
+    }
+
+    public void ApplyPowerup(int face) {
+        transform.Find("Face" + face).GetComponent<Renderer>().material = _powerupMaterials[face];
+    }
+
+    public void UnapplyPowerup(int face) {
+        transform.Find("Face" + face).GetComponent<Renderer>().material = _standardMaterials[face];
     }
 }

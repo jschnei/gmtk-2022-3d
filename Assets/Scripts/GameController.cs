@@ -16,6 +16,7 @@ public class DieState {
     const int D_LEFT = 4;
     const int D_RIGHT = 5;
     public int[] faces = {3, 4, 6, 1, 2, 5};
+    public bool[] powered = {false, false, false, false, false, false, false};
 
     public void LogState() {
         if(VERBOSE) Debug.Log("x=" + posX + ", y=" + posY + ", top=" + faces[D_TOP]);
@@ -83,6 +84,10 @@ public class DieState {
     public int GetTop() {
         return faces[D_TOP];
     }
+
+    public void PowerupFace(int face) {
+        powered[face] = true;
+    }
 }
 
 public class Tile {
@@ -98,6 +103,7 @@ public class Tile {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
+    [SerializeField] private PlayerController _playerController;
     [SerializeField] private FloorController _floorController;
 
     public const int GRID_SIZE = 20;
@@ -193,6 +199,13 @@ public class GameController : MonoBehaviour
     public void CheckPowerup() {
         if (_playerDie.GetBottom() == tileStates[_playerDie.posY, _playerDie.posX]) {
             _floorController.RemovePowerup(_playerDie.posX, _playerDie.posY);
+
+            int puVal = _playerDie.GetBottom();
+
+            if (!_playerDie.powered[puVal]) {
+                _playerController.ApplyPowerup(_playerDie.GetBottom());
+                _playerDie.PowerupFace(_playerDie.GetBottom());
+            }
         }
     }
 }
