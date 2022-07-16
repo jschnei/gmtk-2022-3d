@@ -47,6 +47,10 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
         else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
 
+        if (Input.GetKeyDown(KeyCode.E)) {
+            _gameController.ActivatePowerup();
+        }
+
  
         void Assemble(Vector3 dir) {
             var anchor = transform.position + (Vector3.down + dir) * 0.5f;

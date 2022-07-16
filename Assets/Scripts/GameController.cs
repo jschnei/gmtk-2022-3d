@@ -89,6 +89,10 @@ public class DieState {
         powered[face] = true;
     }
 
+    public void PowerdownFace(int face) {
+        powered[face] = false;
+    }
+
     public bool IsPowered(int face) {
         return powered[face];
     }
@@ -212,6 +216,14 @@ public class GameController : MonoBehaviour
                 _playerDie.PowerupFace(puVal);
             }
         }
+    }
+
+    public void ActivatePowerup() {
+        if (!IsTopActive()) return;
+        _playerController.UnapplyPowerup(_playerDie.GetTop());
+        _playerDie.PowerdownFace(_playerDie.GetTop());
+        _floorController.UpdateTargets();
+        _floorController.ExplodeTiles(GetTiles(_playerDie.GetTop()));
     }
 
     public bool IsTopActive() {

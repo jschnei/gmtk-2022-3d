@@ -10,6 +10,7 @@ public class FloorController : MonoBehaviour
     [SerializeField] private Material[] _powerupMaterials;
     [SerializeField] private GameObject _wallPrefab;
     [SerializeField] private GameObject _targetPrefab;
+    [SerializeField] private GameObject _explosionPrefab;
 
     Timer _spawnTimer;
     public const int SPAWN_INTERVAL = 5;
@@ -82,6 +83,13 @@ public class FloorController : MonoBehaviour
                     targetIndicators[i,j] = null;
                 }
             }
+        }
+    }
+
+    public void ExplodeTiles(List<Tile> tiles) {
+        foreach (Tile tile in tiles) {
+            GameObject newExplosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
+            newExplosion.transform.position = GetSquareCenter(tile.x, tile.y);
         }
     }
 
