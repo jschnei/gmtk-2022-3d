@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class DieState {
     const bool VERBOSE = false;
-
+    public const int MAX_HEALTH = 3;
     public int posX = -1;
     public int posY = -1;
     public int prevPosX = -1;
     public int prevPosY = -1;
 
-    public int health = 1;
+    public int health = MAX_HEALTH;
     public bool isDead = false;
 
     // faces stored as [top, bottom, front, back, left, right]
@@ -389,7 +389,7 @@ public class GameController : MonoBehaviour
         if (_dice[p].isDead) return;
 
         _dice[p].GetHit();
-
+        _dieControllers[p].AdjustHealthbar(_dice[p].health);
         Debug.Log("Die " + p + " hit! Health " + _dice[p].health);
 
         if (_dice[p].health == 0) {

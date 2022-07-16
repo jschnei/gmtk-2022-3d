@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class DieController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
@@ -15,6 +15,7 @@ public class DieController : MonoBehaviour
     [SerializeField] private int spawnX;
     [SerializeField] private int spawnY;
     [SerializeField] private int playerType;
+    [SerializeField] private Image healthBarImage;
 
     public const int PTYPE_PLAYER_ONE = 1;
     public const int PTYPE_PLAYER_TWO = 2;
@@ -120,6 +121,10 @@ public class DieController : MonoBehaviour
 
     public void UnapplyPowerup(int face) {
         transform.Find("Face" + face).GetComponent<Renderer>().material = _standardMaterials[face];
+    }
+
+    public void AdjustHealthbar(int health) {
+        healthBarImage.fillAmount = Mathf.Clamp(health / DieState.MAX_HEALTH, 0, 1f);
     }
 
     public void Die() {
