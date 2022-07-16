@@ -33,7 +33,7 @@ public class FloorController : MonoBehaviour
         UpdateWalls();
     }
 
-    void SpawnPowerup() {
+    public void SpawnPowerup() {
         Tile tile = _gameController.SpawnPowerup();
 
         if (tile.value == -1) return;
@@ -42,6 +42,11 @@ public class FloorController : MonoBehaviour
         newPowerup.transform.parent = transform;
         newPowerup.transform.position = GetSquareCenter(tile.x, tile.y);
         newPowerup.GetComponentInChildren<Renderer>().material = _powerupMaterials[tile.value];
+        powerups[tile.y, tile.x] = newPowerup;
+    }
+
+    public void RemovePowerup(int squareX, int squareY) {
+        if (powerups[squareY, squareX] != null) Destroy(powerups[squareY, squareX]);
     }
 
     // Uses tileStates to add or remove walls as needed.
