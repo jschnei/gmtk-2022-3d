@@ -271,6 +271,13 @@ public class GameController : MonoBehaviour
         return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _dice[p].GetTop());
     }
 
+    public bool IsTargetableByAny(int x, int y) {
+        for (int p = 0; p < _dice.Count; p++) {
+            if (IsTargetableSquare(x, y, p)) return true;
+        }
+        return false;
+    }
+
     // Gets all valid tiles at the given Manhattan
     public List<Tile> GetTiles(int distance, int p) {
         List<Tile> validTiles = new List<Tile>();

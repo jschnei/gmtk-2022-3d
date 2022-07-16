@@ -91,11 +91,11 @@ public class FloorController : MonoBehaviour
     public void UpdateTargets(int p) {
         for (int i=0; i<targetIndicators.GetLength(0); i++) {
             for (int j=0; j<targetIndicators.GetLength(1); j++) {
-                if (targetIndicators[i,j] == null && _gameController.IsTargetableSquare(i, j, p)) {
+                if (targetIndicators[i,j] == null && _gameController.IsTargetableByAny(i, j)) {
                     GameObject newTarget = Instantiate(_targetPrefab, transform.position, Quaternion.identity);
                     newTarget.transform.position = GetSquareCenter(i, j);
                     targetIndicators[i,j] = newTarget;
-                } else if (targetIndicators[i,j] != null && !_gameController.IsTargetableSquare(i, j, p)) {
+                } else if (targetIndicators[i,j] != null && !_gameController.IsTargetableByAny(i, j)) {
                     Destroy(targetIndicators[i,j]);
                     targetIndicators[i,j] = null;
                 }
