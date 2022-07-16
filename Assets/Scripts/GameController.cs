@@ -159,8 +159,6 @@ public class GameController : MonoBehaviour
         DieState die = new DieState();
         _dice.Add(die);
 
-        // todo: move die into place here?
-
         return id;
     }
 
@@ -201,7 +199,7 @@ public class GameController : MonoBehaviour
         }
 
         return true;
-    }
+    } 
 
     public bool MovePlayerToSquare(int x, int y, int p) {
         if (!isValidSquare(x, y)) return false;

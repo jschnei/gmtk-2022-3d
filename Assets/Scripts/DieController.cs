@@ -12,6 +12,9 @@ public class DieController : MonoBehaviour
     [SerializeField] private Material[] _standardMaterials;
     [SerializeField] private Material[] _powerupMaterials;
 
+    [SerializeField] private int spawnX;
+    [SerializeField] private int spawnY;
+
     private int id;
     private bool _isMoving;
 
@@ -19,7 +22,8 @@ public class DieController : MonoBehaviour
     void Start()
     {
         id = _gameController.RegisterDie(this);
-        MoveToSquare(id, id);
+        
+        MoveToSquare(spawnX, spawnY);
     }
 
     public const int INPUT_UP = 0;
@@ -27,6 +31,10 @@ public class DieController : MonoBehaviour
     public const int INPUT_LEFT = 2;
     public const int INPUT_RIGHT = 3;
     public const int INPUT_ACTIVATE = 4;
+
+    public bool IsMoving() {
+        return _isMoving;
+    }
 
     public void HandleInput(int input) {
         if (_isMoving) return;
@@ -57,30 +65,14 @@ public class DieController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        // Get movement input
-        // if (id == 0) {
-        //     if (Input.GetKey(KeyCode.A)) HandleInput(INPUT_LEFT);
-        //     else if (Input.GetKey(KeyCode.D)) HandleInput(INPUT_RIGHT);
-        //     else if (Input.GetKey(KeyCode.W)) HandleInput(INPUT_UP);
-        //     else if (Input.GetKey(KeyCode.S)) HandleInput(INPUT_DOWN);
-        //     else if (Input.GetKey(KeyCode.E)) HandleInput(INPUT_ACTIVATE);
-        // } else if (id == 1) {
-        //     if (Input.GetKey(KeyCode.LeftArrow)) HandleInput(INPUT_LEFT);
-        //     else if (Input.GetKey(KeyCode.RightArrow)) HandleInput(INPUT_RIGHT);
-        //     else if (Input.GetKey(KeyCode.UpArrow)) HandleInput(INPUT_UP);
-        //     else if (Input.GetKey(KeyCode.DownArrow)) HandleInput(INPUT_DOWN);
-        //     else if (Input.GetKey(KeyCode.RightShift)) HandleInput(INPUT_ACTIVATE);
-        // }
-
-
-        // Get projectile input
-        //if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
-        //else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
-        //else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
-        //else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
-    }
+    // void Update()
+    // {
+    //     // Get projectile input
+    //     //if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
+    //     //else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
+    //     //else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
+    //     //else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
+    // }
 
     private IEnumerator Roll(Vector3 anchor, Vector3 axis) {
         _isMoving = true;
