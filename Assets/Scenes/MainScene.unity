@@ -153,7 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _floorController: {fileID: 2102572143}
-  _levelData: {fileID: 4900000, guid: 13ea8ed1bd8cce946adbb1bf7c5f41a1, type: 3}
+  _levelData: {fileID: 4900000, guid: 6a51396543723bd4f8ef062968b18658, type: 3}
+  gridWidth: 0
+  gridHeight: 0
 --- !u!4 &3385919
 Transform:
   m_ObjectHideFlags: 0
@@ -413,7 +415,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9cd145ab0b5ba6c4d9cbcd8ddf5747cc, type: 2}
   - {fileID: 2100000, guid: d476ca7d034595f42acd1266a4d64eed, type: 2}
   - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}
-  spawnX: 18
+  spawnX: 8
   spawnY: 1
 --- !u!65 &371916203
 BoxCollider:
@@ -793,8 +795,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9cd145ab0b5ba6c4d9cbcd8ddf5747cc, type: 2}
   - {fileID: 2100000, guid: d476ca7d034595f42acd1266a4d64eed, type: 2}
   - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}
-  spawnX: 18
-  spawnY: 18
+  spawnX: 8
+  spawnY: 8
 --- !u!65 &689069247
 BoxCollider:
   m_ObjectHideFlags: 0

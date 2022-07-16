@@ -21,12 +21,13 @@ public class FloorController : MonoBehaviour
     private GameObject[,] targetIndicators;
     private GameObject[,] enemies;
 
+    private bool isActive = false;
+
     void Awake() {
-        _spawnTimer = new Timer(SPAWN_INTERVAL);
-        powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
-        walls = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
-        targetIndicators = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
-        enemies = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        // powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        // walls = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        // targetIndicators = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        // enemies = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
     }
 
     // Start is called before the first frame update
@@ -34,9 +35,25 @@ public class FloorController : MonoBehaviour
     {
     }
 
+    public void InitializeFloor(int gridWidth, int gridHeight) {
+        transform.localScale = new Vector3(gridWidth / 10f, 1.0f, gridHeight / 10f);
+        GetComponent<Renderer>().material.mainTextureScale = new Vector2(gridWidth/2, gridHeight/2);
+
+        powerups = new GameObject[gridHeight, gridWidth];
+        walls = new GameObject[gridHeight, gridWidth];
+        targetIndicators = new GameObject[gridHeight, gridWidth];
+        enemies = new GameObject[gridHeight, gridWidth];
+
+        _spawnTimer = new Timer(SPAWN_INTERVAL);
+
+        isActive = true;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (!isActive) return;
+
         _spawnTimer.UpdateTimer(Time.deltaTime);
         if (_spawnTimer.IsOver()) {
             SpawnPowerup();
@@ -89,6 +106,8 @@ public class FloorController : MonoBehaviour
     }
 
     public void UpdateTargets() {
+        if (!isActive) return;
+
         for (int i=0; i<targetIndicators.GetLength(0); i++) {
             for (int j=0; j<targetIndicators.GetLength(1); j++) {
                 if (targetIndicators[i,j] == null && _gameController.IsTargetableByAny(i, j)) {

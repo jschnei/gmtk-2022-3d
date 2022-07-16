@@ -120,7 +120,10 @@ public class GameController : MonoBehaviour
     [SerializeField] private FloorController _floorController;
     [SerializeField] private TextAsset _levelData;
 
-    public const int GRID_SIZE = 20;
+    // public const int GRID_SIZE = 20;
+
+    public int gridWidth;
+    public int gridHeight;
 
     public const int DIR_UP = 0;
     public const int DIR_DOWN = 1;
@@ -152,17 +155,23 @@ public class GameController : MonoBehaviour
         string data = _levelData.text;
         string[] lines = data.Split('\n');
 
-        tileStates = new int[GRID_SIZE, GRID_SIZE];
+        string[] dims = lines[0].Split(',');
+        gridWidth = int.Parse(dims[0]);
+        gridHeight = int.Parse(dims[1]);
 
-        for (int y = 0; y < lines.Length; y++)
+        tileStates = new int[gridHeight, gridWidth];
+
+        for (int y = 0; y < gridHeight; y++)
         {
-            string line = lines[y];
+            string line = lines[y+1];
             string[] pieces = line.Split(',');
-            for (int x=0; x < pieces.Length; x++)
+            for (int x=0; x < gridWidth; x++)
             {
                 tileStates[y, x] = int.Parse(pieces[x]);
             }
         }
+
+        _floorController.InitializeFloor(gridWidth, gridHeight);
     }
 
     public int RegisterDie(DieController controller) {
@@ -188,8 +197,8 @@ public class GameController : MonoBehaviour
     public const int SPAWN_RETRIES = 10;
     public Tile SpawnPowerup() {
         for (int i=0; i<SPAWN_RETRIES; i++) {
-            int randX = (int)(Random.value * GRID_SIZE);
-            int randY = (int)(Random.value * GRID_SIZE);
+            int randX = (int)(Random.value * gridWidth);
+            int randY = (int)(Random.value * gridHeight);
 
             if (tileStates[randY, randX] == 0) {
                 int randVal = (int)(Random.value * 6) + 1;
@@ -210,7 +219,7 @@ public class GameController : MonoBehaviour
     // }
 
     bool isValidSquare(int x, int y) {
-        if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE || tileStates[y,x] == -1) return false;
+        if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight || tileStates[y,x] == -1) return false;
         return true;
     }
 
