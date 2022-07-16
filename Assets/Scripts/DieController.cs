@@ -121,4 +121,8 @@ public class DieController : MonoBehaviour
     public void UnapplyPowerup(int face) {
         transform.Find("Face" + face).GetComponent<Renderer>().material = _standardMaterials[face];
     }
+
+    public void Die() {
+        Destroy(this.gameObject);
+    }
 }
