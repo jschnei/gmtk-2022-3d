@@ -88,6 +88,10 @@ public class DieState {
     public void PowerupFace(int face) {
         powered[face] = true;
     }
+
+    public bool IsPowered(int face) {
+        return powered[face];
+    }
 }
 
 public class Tile {
@@ -192,6 +196,7 @@ public class GameController : MonoBehaviour
         }
 
         CheckPowerup();
+        _floorController.UpdateTargets();
 
         return true;
     }
@@ -207,6 +212,17 @@ public class GameController : MonoBehaviour
                 _playerDie.PowerupFace(_playerDie.GetBottom());
             }
         }
+    }
+
+    public bool IsTopActive() {
+        return _playerDie.IsPowered(_playerDie.GetTop());
+    }
+
+    public bool IsTargetableSquare(int x, int y) {
+        if (!IsTopActive()) return false;
+        int xDelta = x - _playerDie.posX;
+        int yDelta = y - _playerDie.posY;
+        return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _playerDie.GetTop());
     }
 
     // Gets all valid tiles at the given Manhattan

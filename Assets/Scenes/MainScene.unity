@@ -1141,3 +1141,4 @@ MonoBehaviour:
   - {fileID: 2100000, guid: d476ca7d034595f42acd1266a4d64eed, type: 2}
   - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}
   _wallPrefab: {fileID: 506076394723961888, guid: 918b54f0bfbc6c84ebc9b2c97ab3193c, type: 3}
+  _targetPrefab: {fileID: 5123963826186022983, guid: 5c86c8731af786a4b99f49808e9fa132, type: 3}

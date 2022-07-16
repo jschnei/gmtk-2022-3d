@@ -9,18 +9,21 @@ public class FloorController : MonoBehaviour
     [SerializeField] private GameObject _powerupPrefab;
     [SerializeField] private Material[] _powerupMaterials;
     [SerializeField] private GameObject _wallPrefab;
+    [SerializeField] private GameObject _targetPrefab;
 
     Timer _spawnTimer;
     public const int SPAWN_INTERVAL = 5;
 
     private GameObject[,] powerups;
     private GameObject[,] walls;
+    private GameObject[,] targetIndicators;
     // Start is called before the first frame update
     void Start()
     {
         _spawnTimer = new Timer(SPAWN_INTERVAL);
         powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
         walls = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        targetIndicators = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
     }
 
     // Update is called once per frame
@@ -51,7 +54,7 @@ public class FloorController : MonoBehaviour
     }
 
     // Uses tileStates to add or remove walls as needed.
-    private void UpdateWalls() {
+    public void UpdateWalls() {
         int[,] tileStates = _gameController.tileStates;
         for (int i=0; i<tileStates.GetLength(0); i++) {
             for (int j=0; j<tileStates.GetLength(1); j++) {
@@ -62,6 +65,21 @@ public class FloorController : MonoBehaviour
                 } else if (tileStates[i,j] != -1 && walls[i,j] != null) {
                     Destroy(walls[i,j]);
                     walls[i,j] = null;
+                }
+            }
+        }
+    }
+
+    public void UpdateTargets() {
+        for (int i=0; i<targetIndicators.GetLength(0); i++) {
+            for (int j=0; j<targetIndicators.GetLength(1); j++) {
+                if (targetIndicators[i,j] == null && _gameController.IsTargetableSquare(i, j)) {
+                    GameObject newTarget = Instantiate(_targetPrefab, transform.position, Quaternion.identity);
+                    newTarget.transform.position = GetSquareCenter(i, j);
+                    targetIndicators[i,j] = newTarget;
+                } else if (targetIndicators[i,j] != null && !_gameController.IsTargetableSquare(i, j)) {
+                    Destroy(targetIndicators[i,j]);
+                    targetIndicators[i,j] = null;
                 }
             }
         }
