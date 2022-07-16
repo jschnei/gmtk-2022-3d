@@ -59,19 +59,19 @@ public class DieController : MonoBehaviour
     void Update()
     {
         // Get movement input
-        if (id == 0) {
-            if (Input.GetKey(KeyCode.A)) HandleInput(INPUT_LEFT);
-            else if (Input.GetKey(KeyCode.D)) HandleInput(INPUT_RIGHT);
-            else if (Input.GetKey(KeyCode.W)) HandleInput(INPUT_UP);
-            else if (Input.GetKey(KeyCode.S)) HandleInput(INPUT_DOWN);
-            else if (Input.GetKey(KeyCode.E)) HandleInput(INPUT_ACTIVATE);
-        } else if (id == 1) {
-            if (Input.GetKey(KeyCode.LeftArrow)) HandleInput(INPUT_LEFT);
-            else if (Input.GetKey(KeyCode.RightArrow)) HandleInput(INPUT_RIGHT);
-            else if (Input.GetKey(KeyCode.UpArrow)) HandleInput(INPUT_UP);
-            else if (Input.GetKey(KeyCode.DownArrow)) HandleInput(INPUT_DOWN);
-            else if (Input.GetKey(KeyCode.RightShift)) HandleInput(INPUT_ACTIVATE);
-        }
+        // if (id == 0) {
+        //     if (Input.GetKey(KeyCode.A)) HandleInput(INPUT_LEFT);
+        //     else if (Input.GetKey(KeyCode.D)) HandleInput(INPUT_RIGHT);
+        //     else if (Input.GetKey(KeyCode.W)) HandleInput(INPUT_UP);
+        //     else if (Input.GetKey(KeyCode.S)) HandleInput(INPUT_DOWN);
+        //     else if (Input.GetKey(KeyCode.E)) HandleInput(INPUT_ACTIVATE);
+        // } else if (id == 1) {
+        //     if (Input.GetKey(KeyCode.LeftArrow)) HandleInput(INPUT_LEFT);
+        //     else if (Input.GetKey(KeyCode.RightArrow)) HandleInput(INPUT_RIGHT);
+        //     else if (Input.GetKey(KeyCode.UpArrow)) HandleInput(INPUT_UP);
+        //     else if (Input.GetKey(KeyCode.DownArrow)) HandleInput(INPUT_DOWN);
+        //     else if (Input.GetKey(KeyCode.RightShift)) HandleInput(INPUT_ACTIVATE);
+        // }
 
 
         // Get projectile input
