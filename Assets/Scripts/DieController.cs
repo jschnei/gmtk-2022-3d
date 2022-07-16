@@ -131,10 +131,11 @@ public class DieController : MonoBehaviour
     }
 
     public void AdjustHealthbar(int health) {
-        healthBarImage.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
+        if (healthBarImage != null) healthBarImage.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
     }
 
     public void Die() {
         Destroy(this.gameObject);
+        Destroy(this);
     }
 }
