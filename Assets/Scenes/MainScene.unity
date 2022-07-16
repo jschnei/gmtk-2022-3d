@@ -1057,3 +1057,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameController: {fileID: 3385918}
   _powerupPrefab: {fileID: 2423062814266964616, guid: bba7677bb3155b84a97669291db02653, type: 3}
+  _powerupMaterials:
+  - {fileID: 0}
+  - {fileID: 2100000, guid: 5bee1274658e82141ba41715c101693a, type: 2}
+  - {fileID: 2100000, guid: c9f9adb33a9cc0c4d8f59abe2064e979, type: 2}
+  - {fileID: 2100000, guid: 8cd424bab0aa8164e9545f3fc5164e9e, type: 2}
+  - {fileID: 2100000, guid: 9cd145ab0b5ba6c4d9cbcd8ddf5747cc, type: 2}
+  - {fileID: 2100000, guid: d476ca7d034595f42acd1266a4d64eed, type: 2}
+  - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}

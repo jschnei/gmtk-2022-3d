@@ -6,15 +6,18 @@ public class FloorController : MonoBehaviour
 {
     [SerializeField] private GameController _gameController;
     [SerializeField] private GameObject _powerupPrefab;
+    [SerializeField] private Material[] _powerupMaterials;
 
     // TODO: do timer correctly
     private int _spawnTimer = 0;
     public const int SPAWN_INTERVAL = 600;
 
+    private GameObject[,] powerups;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
     }
 
     // Update is called once per frame
@@ -30,10 +33,12 @@ public class FloorController : MonoBehaviour
     void SpawnPowerup() {
         Tile tile = _gameController.SpawnPowerup();
 
-        if (tile.x == -1) return;
+        if (tile.value == -1) return;
 
         GameObject newPowerup = Instantiate(_powerupPrefab, transform.position, Quaternion.identity);
-        newPowerup.transform.position = GetSquareCenter(tile.x, tile.y);        
+        newPowerup.transform.parent = transform;
+        newPowerup.transform.position = GetSquareCenter(tile.x, tile.y);
+        newPowerup.GetComponentInChildren<Renderer>().material = _powerupMaterials[tile.value];
     }
 
     public Vector3 GetSquareCenter(int squareX, int squareY) {
