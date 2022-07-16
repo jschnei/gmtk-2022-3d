@@ -80,10 +80,15 @@ public class DieState {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
+    public const int GRID_SIZE = 50;
+
     public const int DIR_UP = 0;
     public const int DIR_DOWN = 1;
     public const int DIR_LEFT = 2;
     public const int DIR_RIGHT = 3;
+
+    public static readonly int[] DELTA_X = {0, 0, -1, 1};
+    public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
     private DieState _playerDie;
     // Start is called before the first frame update
@@ -92,15 +97,25 @@ public class GameController : MonoBehaviour
         _playerDie = new DieState();
     }
 
+    public bool isValidSquare(int x, int y) {
+        return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE);
+    }
+
     public bool MovePlayerToSquare(int x, int y) {
         // todo: check if square is valid
-        
+        if (!isValidSquare(x, y)) return false;
+
         _playerDie.SetPosition(x,  y);
 
         return true;
     }
 
     public bool PlayerRoll(int dir) {
+        int nX = _playerDie.posX + DELTA_X[dir];
+        int nY = _playerDie.posY + DELTA_Y[dir];
+
+        if (!isValidSquare(nX, nY)) return false;
+
         switch (dir) {
             case DIR_UP:
                 _playerDie.RollUp();
