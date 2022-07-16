@@ -494,6 +494,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rollSpeed: 5
   _floor: {fileID: 2102572138}
+  _projectile: {fileID: 4930401841867257341, guid: 56d623b0c8a2b034dbd73c5fc6afdfe9, type: 3}
 --- !u!1 &786455466
 GameObject:
   m_ObjectHideFlags: 0
