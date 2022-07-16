@@ -5,7 +5,6 @@ using UnityEngine;
 public class DieController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
-    [SerializeField] private int id;
     [SerializeField] private GameController _gameController;
     [SerializeField] private FloorController _floorController;
     [SerializeField] private GameObject _projectile;
@@ -13,11 +12,13 @@ public class DieController : MonoBehaviour
     [SerializeField] private Material[] _standardMaterials;
     [SerializeField] private Material[] _powerupMaterials;
 
+    private int id;
     private bool _isMoving;
 
     // Start is called before the first frame update
     void Start()
     {
+        id = _gameController.RegisterDie(this);
         MoveToSquare(id, id);
     }
 

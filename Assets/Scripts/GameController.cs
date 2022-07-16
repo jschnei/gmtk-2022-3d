@@ -111,7 +111,6 @@ public class Tile {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private DieController[] _playerController;
     [SerializeField] private FloorController _floorController;
 
     public const int GRID_SIZE = 20;
@@ -124,15 +123,15 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_X = {0, 0, -1, 1};
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
-    private DieState[] _playerDie = new DieState[2];
+    private List<DieController> _dieControllers;
+    private List<DieState> _dice;
 
-    public List<DieState> _enemyDice;
+    // public List<DieState> _enemyDice;
 
     // tileState:
     //  -1 = impassable (i.e., wall)
     //  0 = regular tile
     //  1-6 = powerup (with this label)
-    //  10 = enemy
     public int[,] tileStates;
 
     void Awake() {
@@ -143,14 +142,35 @@ public class GameController : MonoBehaviour
         for (int i=0; i<17; i++) {
             tileStates[i, 5] = -1;
         }
-        _playerDie[0] = new DieState();
-        _playerDie[1] = new DieState();
-        _enemyDice = new List<DieState>();
+
+        _dieControllers = new List<DieController>();
+        _dice = new List<DieState>();
+
+        // _dice[0] = new DieState();
+        // _dice[1] = new DieState();
+        // _enemyDice = new List<DieState>();
+    }
+
+    public int RegisterDie(DieController controller) {
+        // shouldn't happen but just in case
+        if (_dieControllers == null) _dieControllers = new List<DieController>();
+        if (_dice == null) _dice = new List<DieState>(); 
+
+        int id = _dice.Count;
+
+        _dieControllers.Add(controller);
+        
+        DieState die = new DieState();
+        _dice.Add(die);
+
+        // todo: move die into place here?
+
+        return id;
     }
 
     void Start()
     {
-        SpawnEnemy(10, 10);
+        // SpawnEnemy(10, 10);
     }
 
     public const int SPAWN_RETRIES = 10;
@@ -170,49 +190,47 @@ public class GameController : MonoBehaviour
         return new Tile(-1, -1, -1);
     }
 
-    public void SpawnEnemy(int x, int y) {
-        DieState enemyState = new DieState();
-        enemyState.SetPosition(x, y);
-        _enemyDice.Add(enemyState);
-        tileStates[y, x] = 10;
-        _floorController.SpawnEnemy(x, y);
-    }
+    // public void SpawnEnemy(int x, int y) {
+    //     DieState enemyState = new DieState();
+    //     enemyState.SetPosition(x, y);
+    //     _enemyDice.Add(enemyState);
+    //     _floorController.SpawnEnemy(x, y);
+    // }
 
     // TODO: check collision between different players
     bool isValidSquare(int x, int y) {
         return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE && tileStates[y,x] != -1);
     }
 
-    // TODO: support multiple DieStates
     public bool MovePlayerToSquare(int x, int y, int p) {
         if (!isValidSquare(x, y)) return false;
 
-        _playerDie[p].SetPosition(x,  y);
+        _dice[p].SetPosition(x,  y);
 
         return true;
     }
 
     public bool PlayerRoll(int dir, int p) {
-        int nX = _playerDie[p].posX + DELTA_X[dir];
-        int nY = _playerDie[p].posY + DELTA_Y[dir];
+        int nX = _dice[p].posX + DELTA_X[dir];
+        int nY = _dice[p].posY + DELTA_Y[dir];
 
         if (!isValidSquare(nX, nY)) return false;
 
         switch (dir) {
             case DIR_UP:
-                _playerDie[p].RollUp();
+                _dice[p].RollUp();
                 break;
             
             case DIR_DOWN:
-                _playerDie[p].RollDown();
+                _dice[p].RollDown();
                 break;
             
             case DIR_LEFT:
-                _playerDie[p].RollLeft();
+                _dice[p].RollLeft();
                 break;
             
             case DIR_RIGHT:
-                _playerDie[p].RollRight();
+                _dice[p].RollRight();
                 break;
         }
 
@@ -223,35 +241,35 @@ public class GameController : MonoBehaviour
     }
 
     public void CheckPowerup(int i) {
-        if (_playerDie[i].GetBottom() == tileStates[_playerDie[i].posY, _playerDie[i].posX]) {
-            _floorController.RemovePowerup(_playerDie[i].posX, _playerDie[i].posY);
+        if (_dice[i].GetBottom() == tileStates[_dice[i].posY, _dice[i].posX]) {
+            _floorController.RemovePowerup(_dice[i].posX, _dice[i].posY);
 
-            int puVal = _playerDie[i].GetBottom();
+            int puVal = _dice[i].GetBottom();
 
-            if (!_playerDie[i].powered[puVal]) {
-                _playerController[i].ApplyPowerup(puVal);
-                _playerDie[i].PowerupFace(puVal);
+            if (!_dice[i].powered[puVal]) {
+                _dieControllers[i].ApplyPowerup(puVal);
+                _dice[i].PowerupFace(puVal);
             }
         }
     }
 
     public void ActivatePowerup(int p) {
         if (!IsTopActive(p)) return;
-        _playerController[p].UnapplyPowerup(_playerDie[p].GetTop());
-        _playerDie[p].PowerdownFace(_playerDie[p].GetTop());
+        _dieControllers[p].UnapplyPowerup(_dice[p].GetTop());
+        _dice[p].PowerdownFace(_dice[p].GetTop());
         _floorController.UpdateTargets(p);
-        _floorController.ExplodeTiles(GetTiles(_playerDie[p].GetTop(), p));
+        _floorController.ExplodeTiles(GetTiles(_dice[p].GetTop(), p));
     }
 
     public bool IsTopActive(int p) {
-        return _playerDie[p].IsPowered(_playerDie[p].GetTop());
+        return _dice[p].IsPowered(_dice[p].GetTop());
     }
 
     public bool IsTargetableSquare(int x, int y, int p) {
         if (!IsTopActive(p)) return false;
-        int xDelta = x - _playerDie[p].posX;
-        int yDelta = y - _playerDie[p].posY;
-        return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _playerDie[p].GetTop());
+        int xDelta = x - _dice[p].posX;
+        int yDelta = y - _dice[p].posY;
+        return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _dice[p].GetTop());
     }
 
     // Gets all valid tiles at the given Manhattan
@@ -260,8 +278,8 @@ public class GameController : MonoBehaviour
         for (int i = -distance; i <= distance; i++) {
             for (int j = -distance; j <= distance; j++) {
                 if (Mathf.Abs(i) + Mathf.Abs(j) != distance) continue;
-                int newX = _playerDie[p].posX + i;
-                int newY = _playerDie[p].posY + j;
+                int newX = _dice[p].posX + i;
+                int newY = _dice[p].posY + j;
                 if (!isValidSquare(newX, newY)) continue;
                 validTiles.Add(new Tile(newX, newY, 0));
             }
