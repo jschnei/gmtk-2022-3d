@@ -195,4 +195,19 @@ public class GameController : MonoBehaviour
             _floorController.RemovePowerup(_playerDie.posX, _playerDie.posY);
         }
     }
+
+    // Gets all valid tiles at the given Manhattan
+    public List<Tile> GetTiles(int distance) {
+        List<Tile> validTiles = new List<Tile>();
+        for (int i = -distance; i <= distance; i++) {
+            for (int j = -distance; j <= distance; j++) {
+                if (Mathf.Abs(i) + Mathf.Abs(j) != distance) continue;
+                int newX = _playerDie.posX + i;
+                int newY = _playerDie.posY + j;
+                if (!isValidSquare(newX, newY)) continue;
+                validTiles.Add(new Tile(newX, newY, 0));
+            }
+        }
+        return validTiles;
+    }
 }

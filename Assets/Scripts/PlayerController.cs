@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A)) {
             if (_gameController.PlayerRoll(GameController.DIR_LEFT)) Assemble(Vector3.left);
         }
-        else if (Input.GetKey(KeyCode.D)){
+        else if (Input.GetKey(KeyCode.D)) {
             if (_gameController.PlayerRoll(GameController.DIR_RIGHT)) Assemble(Vector3.right);
         }
         else if (Input.GetKey(KeyCode.W)) {
