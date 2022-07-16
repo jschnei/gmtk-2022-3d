@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FloorController : MonoBehaviour
 {
@@ -9,15 +10,15 @@ public class FloorController : MonoBehaviour
     [SerializeField] private Material[] _powerupMaterials;
     [SerializeField] private GameObject _wallPrefab;
 
-    // TODO: do timer correctly
-    private int _spawnTimer = 0;
-    public const int SPAWN_INTERVAL = 600;
+    Timer _spawnTimer;
+    public const int SPAWN_INTERVAL = 5;
 
     private GameObject[,] powerups;
     private GameObject[,] walls;
     // Start is called before the first frame update
     void Start()
     {
+        _spawnTimer = new Timer(SPAWN_INTERVAL);
         powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
         walls = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
     }
@@ -25,10 +26,10 @@ public class FloorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        _spawnTimer++;
-        if (_spawnTimer == SPAWN_INTERVAL) {
-            _spawnTimer = 0;
+        _spawnTimer.UpdateTimer(Time.deltaTime);
+        if (_spawnTimer.IsOver()) {
             SpawnPowerup();
+            _spawnTimer = new Timer(SPAWN_INTERVAL);
         }
         UpdateWalls();
     }
