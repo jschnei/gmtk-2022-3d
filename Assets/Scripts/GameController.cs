@@ -337,7 +337,9 @@ public class GameController : MonoBehaviour
         Debug.Log("Attacking targets!");
         foreach (Tile tile in targets) {
             for(int p = 0; p < _dice.Count; p++) {
-                if (_dice[p].posX == tile.x && _dice[p].posY == tile.y) {
+                bool playerOnTile = _dice[p].posX == tile.x && _dice[p].posY == tile.y;
+                bool movingPlayerWasOnTile = _dieControllers[p].IsMoving() && _dice[p].prevPosX == tile.x && _dice[p].prevPosY == tile.y;
+                if (playerOnTile || movingPlayerWasOnTile) {
                     AttackPlayer(p);
                 }
             }
