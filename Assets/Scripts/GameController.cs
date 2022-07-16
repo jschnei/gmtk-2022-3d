@@ -111,7 +111,7 @@ public class Tile {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private PlayerController[] _playerController;
+    [SerializeField] private DieController[] _playerController;
     [SerializeField] private FloorController _floorController;
 
     public const int GRID_SIZE = 20;

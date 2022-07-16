@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class DieController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
     [SerializeField] private int id;
@@ -21,59 +21,64 @@ public class PlayerController : MonoBehaviour
         MoveToSquare(id, id);
     }
 
+    public const int INPUT_UP = 0;
+    public const int INPUT_DOWN = 1;
+    public const int INPUT_LEFT = 2;
+    public const int INPUT_RIGHT = 3;
+    public const int INPUT_ACTIVATE = 4;
+
+    public void HandleInput(int input) {
+        if (_isMoving) return;
+
+        switch(input) {
+            case INPUT_LEFT:
+                if (_gameController.PlayerRoll(GameController.DIR_LEFT, id)) Assemble(Vector3.left);
+                break;
+            case INPUT_RIGHT:
+                if (_gameController.PlayerRoll(GameController.DIR_RIGHT, id)) Assemble(Vector3.right);
+                break;
+            case INPUT_DOWN:
+                if (_gameController.PlayerRoll(GameController.DIR_DOWN, id)) Assemble(Vector3.back);
+                break;
+            case INPUT_UP:
+                if (_gameController.PlayerRoll(GameController.DIR_UP, id)) Assemble(Vector3.forward);
+                break;
+            case INPUT_ACTIVATE:
+                _gameController.ActivatePowerup(id);
+                break;
+        }
+
+        void Assemble(Vector3 dir) {
+            var anchor = transform.position + (Vector3.down + dir) * 0.5f;
+            var axis = Vector3.Cross(Vector3.up, dir);
+            StartCoroutine(Roll(anchor, axis));
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (_isMoving) return;
-
         // Get movement input
-        if (Input.GetKey(KeyCode.A) && id == 0) {
-            if (_gameController.PlayerRoll(GameController.DIR_LEFT, id)) Assemble(Vector3.left);
+        if (id == 0) {
+            if (Input.GetKey(KeyCode.A)) HandleInput(INPUT_LEFT);
+            else if (Input.GetKey(KeyCode.D)) HandleInput(INPUT_RIGHT);
+            else if (Input.GetKey(KeyCode.W)) HandleInput(INPUT_UP);
+            else if (Input.GetKey(KeyCode.S)) HandleInput(INPUT_DOWN);
+            else if (Input.GetKey(KeyCode.E)) HandleInput(INPUT_ACTIVATE);
+        } else if (id == 1) {
+            if (Input.GetKey(KeyCode.LeftArrow)) HandleInput(INPUT_LEFT);
+            else if (Input.GetKey(KeyCode.RightArrow)) HandleInput(INPUT_RIGHT);
+            else if (Input.GetKey(KeyCode.UpArrow)) HandleInput(INPUT_UP);
+            else if (Input.GetKey(KeyCode.DownArrow)) HandleInput(INPUT_DOWN);
+            else if (Input.GetKey(KeyCode.RightShift)) HandleInput(INPUT_ACTIVATE);
         }
-        else if (Input.GetKey(KeyCode.D) && id == 0) {
-            if (_gameController.PlayerRoll(GameController.DIR_RIGHT, id)) Assemble(Vector3.right);
-        }
-        else if (Input.GetKey(KeyCode.W) && id == 0) {
-            if (_gameController.PlayerRoll(GameController.DIR_UP, id)) Assemble(Vector3.forward);
-        } 
-        else if (Input.GetKey(KeyCode.S) && id == 0) {
-            if (_gameController.PlayerRoll(GameController.DIR_DOWN, id)) Assemble(Vector3.back);
-        } 
 
-        if (_isMoving) return;
 
         // Get projectile input
         //if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
         //else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
         //else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
         //else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
-
-        if (Input.GetKeyDown(KeyCode.E) && id == 0) {
-            _gameController.ActivatePowerup(id);
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow) && id == 1) {
-            if (_gameController.PlayerRoll(GameController.DIR_LEFT, id)) Assemble(Vector3.left);
-        }
-        else if (Input.GetKey(KeyCode.RightArrow) && id == 1) {
-            if (_gameController.PlayerRoll(GameController.DIR_RIGHT, id)) Assemble(Vector3.right);
-        }
-        else if (Input.GetKey(KeyCode.UpArrow) && id == 1) {
-            if (_gameController.PlayerRoll(GameController.DIR_UP, id)) Assemble(Vector3.forward);
-        } 
-        else if (Input.GetKey(KeyCode.DownArrow) && id == 1) {
-            if (_gameController.PlayerRoll(GameController.DIR_DOWN, id)) Assemble(Vector3.back);
-        } 
-
-        if (Input.GetKeyDown(KeyCode.RightShift) && id == 1) {
-            _gameController.ActivatePowerup(id);
-        }
- 
-        void Assemble(Vector3 dir) {
-            var anchor = transform.position + (Vector3.down + dir) * 0.5f;
-            var axis = Vector3.Cross(Vector3.up, dir);
-            StartCoroutine(Roll(anchor, axis));
-        }
     }
 
     private IEnumerator Roll(Vector3 anchor, Vector3 axis) {
@@ -88,6 +93,8 @@ public class PlayerController : MonoBehaviour
     private void MoveToSquare(int squareX, int squareY) {
         if (_gameController.MovePlayerToSquare(squareX, squareY, id)) {
             transform.position = _floorController.GetSquareCenter(squareX, squareY) + (0.5f) * Vector3.up;
+        } else {
+            Debug.Log("Error moving die " + id + " to square " + squareX + ", " + squareY);
         }
     }
 
