@@ -80,7 +80,7 @@ public class DieState {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
-    public const int GRID_SIZE = 50;
+    public const int GRID_SIZE = 20;
 
     public const int DIR_UP = 0;
     public const int DIR_DOWN = 1;
