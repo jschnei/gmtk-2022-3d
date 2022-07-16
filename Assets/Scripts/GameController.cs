@@ -75,6 +75,14 @@ public class DieState {
 
         LogState();
     }
+
+    public int GetBottom() {
+        return faces[D_BOTTOM];
+    }
+
+    public int GetTop() {
+        return faces[D_TOP];
+    }
 }
 
 public class Tile {
@@ -90,6 +98,8 @@ public class Tile {
 // GameController should manage all discrete game logic
 public class GameController : MonoBehaviour
 {
+    [SerializeField] private FloorController _floorController;
+
     public const int GRID_SIZE = 20;
 
     public const int DIR_UP = 0;
@@ -106,11 +116,18 @@ public class GameController : MonoBehaviour
     //  -1 = impassable (i.e., wall)
     //  0 = regular tile
     //  1-6 = powerup (with this label)
-    private int[,] tileStates;
+    public int[,] tileStates;
+
 
     void Start()
     {
         tileStates = new int[GRID_SIZE, GRID_SIZE];
+        // Set some arbitrary walls, eventually this should be passed in.
+        tileStates[1, 8] = -1;
+        tileStates[9, 4] = -1;
+        for (int i=0; i<17; i++) {
+            tileStates[i, 5] = -1;
+        }
         _playerDie = new DieState();
     }
 
@@ -135,6 +152,7 @@ public class GameController : MonoBehaviour
         return (x >= 0  && y >= 0 && x < GRID_SIZE && y < GRID_SIZE && tileStates[y,x] != -1);
     }
 
+    // TODO: support multiple DieStates
     public bool MovePlayerToSquare(int x, int y) {
         if (!isValidSquare(x, y)) return false;
 
@@ -167,6 +185,14 @@ public class GameController : MonoBehaviour
                 break;
         }
 
+        CheckPowerup();
+
         return true;
+    }
+
+    public void CheckPowerup() {
+        if (_playerDie.GetBottom() == tileStates[_playerDie.posY, _playerDie.posX]) {
+            _floorController.RemovePowerup(_playerDie.posX, _playerDie.posY);
+        }
     }
 }

@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f34eb3dc2f5dc6a42806c07339281e92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _floorController: {fileID: 2102572143}
 --- !u!4 &3385919
 Transform:
   m_ObjectHideFlags: 0
@@ -1037,7 +1038,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2102572138}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5001, z: 1.35}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1057,6 +1058,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameController: {fileID: 3385918}
   _powerupPrefab: {fileID: 2423062814266964616, guid: bba7677bb3155b84a97669291db02653, type: 3}
+  _wallPrefab: {fileID: 506076394723961888, guid: 918b54f0bfbc6c84ebc9b2c97ab3193c, type: 3}
   _powerupMaterials:
   - {fileID: 0}
   - {fileID: 2100000, guid: 5bee1274658e82141ba41715c101693a, type: 2}

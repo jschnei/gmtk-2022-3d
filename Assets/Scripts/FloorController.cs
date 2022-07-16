@@ -8,17 +8,19 @@ public class FloorController : MonoBehaviour
     [SerializeField] private GameController _gameController;
     [SerializeField] private GameObject _powerupPrefab;
     [SerializeField] private Material[] _powerupMaterials;
+    [SerializeField] private GameObject _wallPrefab;
 
     Timer _spawnTimer;
     public const int SPAWN_INTERVAL = 5;
 
     private GameObject[,] powerups;
-
+    private GameObject[,] walls;
     // Start is called before the first frame update
     void Start()
     {
-        powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
         _spawnTimer = new Timer(SPAWN_INTERVAL);
+        powerups = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
+        walls = new GameObject[GameController.GRID_SIZE, GameController.GRID_SIZE];
     }
 
     // Update is called once per frame
@@ -29,9 +31,10 @@ public class FloorController : MonoBehaviour
             SpawnPowerup();
             _spawnTimer = new Timer(SPAWN_INTERVAL);
         }
+        UpdateWalls();
     }
 
-    void SpawnPowerup() {
+    public void SpawnPowerup() {
         Tile tile = _gameController.SpawnPowerup();
 
         if (tile.value == -1) return;
@@ -40,6 +43,28 @@ public class FloorController : MonoBehaviour
         newPowerup.transform.parent = transform;
         newPowerup.transform.position = GetSquareCenter(tile.x, tile.y);
         newPowerup.GetComponentInChildren<Renderer>().material = _powerupMaterials[tile.value];
+        powerups[tile.y, tile.x] = newPowerup;
+    }
+
+    public void RemovePowerup(int squareX, int squareY) {
+        if (powerups[squareY, squareX] != null) Destroy(powerups[squareY, squareX]);
+    }
+
+    // Uses tileStates to add or remove walls as needed.
+    private void UpdateWalls() {
+        int[,] tileStates = _gameController.tileStates;
+        for (int i=0; i<tileStates.GetLength(0); i++) {
+            for (int j=0; j<tileStates.GetLength(1); j++) {
+                if (tileStates[i,j] == -1 && walls[i,j] == null) {
+                    GameObject newWall = Instantiate(_wallPrefab, transform.position, Quaternion.identity);
+                    newWall.transform.position = GetSquareCenter(j, i);
+                    walls[i,j] = newWall;
+                } else if (tileStates[i,j] != -1 && walls[i,j] != null) {
+                    Destroy(walls[i,j]);
+                    walls[i,j] = null;
+                }
+            }
+        }
     }
 
     public Vector3 GetSquareCenter(int squareX, int squareY) {
