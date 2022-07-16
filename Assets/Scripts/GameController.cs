@@ -175,6 +175,7 @@ public class GameController : MonoBehaviour
         gridWidth = int.Parse(dims[0]);
         gridHeight = int.Parse(dims[1]);
 
+        Debug.Log(gridHeight + " " + gridWidth);
         tileStates = new int[gridHeight, gridWidth];
 
         for (int y = 0; y < gridHeight; y++)
@@ -334,7 +335,6 @@ public class GameController : MonoBehaviour
     }
 
     public void AttackTargets(List<Tile> targets) {
-        Debug.Log("Attacking targets!");
         foreach (Tile tile in targets) {
             for(int p = 0; p < _dice.Count; p++) {
                 bool playerOnTile = _dice[p].posX == tile.x && _dice[p].posY == tile.y;
@@ -344,6 +344,33 @@ public class GameController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void EnemyAttack(int attack, int p) {
+        List<Tile> targets = GetEnemyAttackTargets(attack, p);
+
+        if (targets.Count == 0) return;
+
+        AttackTargets(targets);
+        _floorController.ExplodeTiles(targets);
+    }
+
+    public List<Tile> GetEnemyAttackTargets(int attack, int p) {
+        List<Tile> validTiles = new List<Tile>();
+        if (attack == DieController.INPUT_RED_ATTACK_1) {
+            for (int i = -1; i <= 1; i++) {
+                for (int j = -1; j <= 1; j++) {
+                    if (i == 0 && j == 0) continue;
+                    int newX = _dice[p].posX + i;
+                    int newY = _dice[p].posY + j;
+                    if (!isValidSquare(newX, newY)) continue;
+                    validTiles.Add(new Tile(newX, newY, 0));
+                }
+            }
+            
+        }
+
+        return validTiles;
     }
 
     public void AttackPlayer(int p) {

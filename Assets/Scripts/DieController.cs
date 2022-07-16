@@ -32,12 +32,18 @@ public class DieController : MonoBehaviour
     public const int INPUT_RIGHT = 3;
     public const int INPUT_ACTIVATE = 4;
 
+    public const int INPUT_RED_ATTACK_1 = 10;
+    public const int INPUT_RED_ATTACK_2 = 11;
+    public const int INPUT_RED_ATTACK_3 = 12;
+
     public bool IsMoving() {
         return _isMoving;
     }
 
     public void HandleInput(int input) {
         if (_isMoving) return;
+
+        if (input == -1) return;
 
         switch(input) {
             case INPUT_LEFT:
@@ -54,6 +60,10 @@ public class DieController : MonoBehaviour
                 break;
             case INPUT_ACTIVATE:
                 _gameController.ActivatePowerup(id);
+                break;
+            
+            default:
+                _gameController.EnemyAttack(input, id);
                 break;
         }
 
