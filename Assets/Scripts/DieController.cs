@@ -81,6 +81,7 @@ public class DieController : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         _isMoving = false;
+        _gameController.FinishRoll(id);
     }
 
     private void MoveToSquare(int squareX, int squareY) {

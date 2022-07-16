@@ -7,6 +7,8 @@ public class DieState {
 
     public int posX = -1;
     public int posY = -1;
+    public int prevPosX = -1;
+    public int prevPosY = -1;
 
     public int health = 3;
 
@@ -31,7 +33,18 @@ public class DieState {
         LogState();
     }
 
+    public void SavePreviousPosition() {
+        prevPosX = posX;
+        prevPosY = posY;
+    }
+
+    public void ClearPreviousPosition() {
+        prevPosX = -1;
+        prevPosY = -1;
+    }
+
     public void RollUp() {
+        SavePreviousPosition();
         int tmp_top = faces[D_TOP];
         faces[D_TOP] = faces[D_FRONT];
         faces[D_FRONT] = faces[D_BOTTOM];
@@ -44,6 +57,7 @@ public class DieState {
     }
 
     public void RollDown() {
+        SavePreviousPosition();
         int tmp_top = faces[D_TOP];
         faces[D_TOP] = faces[D_BACK];
         faces[D_BACK] = faces[D_BOTTOM];
@@ -56,6 +70,7 @@ public class DieState {
     }
 
     public void RollLeft() {
+        SavePreviousPosition();
         int tmp_top = faces[D_TOP];
         faces[D_TOP] = faces[D_RIGHT];
         faces[D_RIGHT] = faces[D_BOTTOM];
@@ -68,6 +83,7 @@ public class DieState {
     }
 
     public void RollRight() {
+        SavePreviousPosition();
         int tmp_top = faces[D_TOP];
         faces[D_TOP] = faces[D_LEFT];
         faces[D_LEFT] = faces[D_BOTTOM];
@@ -269,6 +285,10 @@ public class GameController : MonoBehaviour
         _floorController.UpdateTargets();
 
         return true;
+    }
+
+    public void FinishRoll(int p) {
+        _dice[p].ClearPreviousPosition();
     }
 
     public void CheckPowerup(int i) {
