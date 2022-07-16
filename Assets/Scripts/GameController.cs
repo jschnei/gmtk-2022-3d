@@ -188,8 +188,14 @@ public class GameController : MonoBehaviour
                 if (line[x] == '#') {
                     tileStates[y, x] = -1;
                 } else if (line[x] == 'R') {
-                    // make new red enemy at (y, x)
-                    SpawnDie(x, y);
+                    // make new red enemy at (x, y)
+                    SpawnDie(x, y, DieController.PTYPE_ENEMY);
+                } else if (line[x] == '1') {
+                    // player 1 spawns at ()
+                    SpawnDie(x, y, DieController.PTYPE_PLAYER_ONE);
+                } else if (line[x] == '2') {
+                    // player 1 spawns at ()
+                    SpawnDie(x, y, DieController.PTYPE_PLAYER_TWO);
                 }
                 // tileStates[y, x] = int.Parse(pieces[x]);
             }
@@ -234,8 +240,8 @@ public class GameController : MonoBehaviour
         return new Tile(-1, -1, -1);
     }
 
-    public void SpawnDie(int x, int y) {
-        _floorController.SpawnDie(x, y, DieController.PTYPE_ENEMY);
+    public void SpawnDie(int x, int y, int type) {
+        _floorController.SpawnDie(x, y, type);
     }
 
     bool isValidSquare(int x, int y) {
