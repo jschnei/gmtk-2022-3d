@@ -493,6 +493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rollSpeed: 5
+  _floor: {fileID: 2102572138}
 --- !u!1 &786455466
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,7 +914,7 @@ GameObject:
   - component: {fileID: 2102572140}
   - component: {fileID: 2102572139}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

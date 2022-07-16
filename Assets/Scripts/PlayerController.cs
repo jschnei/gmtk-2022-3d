@@ -5,12 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
+    [SerializeField] private GameObject _floor;
+
     private bool _isMoving;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        MoveToSquare(1, 1);
     }
 
     // Update is called once per frame
@@ -37,5 +39,10 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
         _isMoving = false;
+    }
+
+    private void MoveToSquare(int squareX, int squareY) {
+        Vector3 floorBackLeft = _floor.transform.position + (5.0f) * _floor.transform.localScale.x * Vector3.left + (5.0f) * _floor.transform.localScale.z * Vector3.forward;
+        transform.position = floorBackLeft + squareX * Vector3.right + squareY * Vector3.back  + (0.5f) * Vector3.up + (0.5f) * Vector3.right + (0.5f) * Vector3.back;
     }
 }
