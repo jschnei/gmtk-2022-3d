@@ -12,6 +12,7 @@ public class DieState {
 
     public int health = MAX_HEALTH;
     public bool isDead = false;
+    public int totalPowerups = 0;
 
     // faces stored as [top, bottom, front, back, left, right]
     const int D_TOP = 0;
@@ -102,6 +103,10 @@ public class DieState {
 
     public int GetTop() {
         return faces[D_TOP];
+    }
+
+    public void IncrementPowerupCount() {
+        totalPowerups += 1;
     }
 
     public void PowerupFace(int face) {
@@ -309,6 +314,8 @@ public class GameController : MonoBehaviour
 
         if (_dice[p].GetBottom() == tileStates[_dice[p].posY, _dice[p].posX]) {
             _floorController.RemovePowerup(_dice[p].posX, _dice[p].posY);
+            tileStates[_dice[p].posY, _dice[p].posX] = 0;
+            _dice[p].IncrementPowerupCount();
 
             int puVal = _dice[p].GetBottom();
 
