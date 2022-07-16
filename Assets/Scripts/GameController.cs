@@ -118,6 +118,7 @@ public class Tile {
 public class GameController : MonoBehaviour
 {
     [SerializeField] private FloorController _floorController;
+    [SerializeField] private TextAsset _levelData;
 
     public const int GRID_SIZE = 20;
 
@@ -140,17 +141,34 @@ public class GameController : MonoBehaviour
     //  1-6 = powerup (with this label)
     public int[,] tileStates;
 
-    void Awake() {
-        tileStates = new int[GRID_SIZE, GRID_SIZE];
-        // Set some arbitrary walls, eventually this should be passed in.
-        tileStates[1, 8] = -1;
-        tileStates[9, 4] = -1;
-        for (int i=0; i<17; i++) {
-            tileStates[i, 5] = -1;
-        }
+    void Awake() {       
+        LoadLevel();
+        
+        // tileStates[1, 8] = -1;
+        // tileStates[9, 4] = -1;
+        // for (int i=0; i<17; i++) {
+        //     tileStates[i, 5] = -1;
+        // }
 
         _dieControllers = new List<DieController>();
         _dice = new List<DieState>();
+    }
+
+    void LoadLevel() {
+        string data = _levelData.text;
+        string[] lines = data.Split('\n');
+
+        tileStates = new int[GRID_SIZE, GRID_SIZE];
+
+        for (int y = 0; y < lines.Length; y++)
+        {
+            string line = lines[y];
+            string[] pieces = line.Split(',');
+            for (int x=0; x < pieces.Length; x++)
+            {
+                tileStates[y, x] = int.Parse(pieces[x]);
+            }
+        }
     }
 
     public int RegisterDie(DieController controller) {

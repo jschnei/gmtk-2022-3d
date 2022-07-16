@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _floorController: {fileID: 2102572143}
+  _levelData: {fileID: 4900000, guid: 13ea8ed1bd8cce946adbb1bf7c5f41a1, type: 3}
 --- !u!4 &3385919
 Transform:
   m_ObjectHideFlags: 0
@@ -772,7 +773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d3cef4def45694c87b5bc98d585f99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rollSpeed: 5
+  _rollSpeed: 2.5
   _gameController: {fileID: 3385918}
   _floorController: {fileID: 2102572143}
   _projectile: {fileID: 4930401841867257341, guid: 56d623b0c8a2b034dbd73c5fc6afdfe9, type: 3}
@@ -1102,7 +1103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d3cef4def45694c87b5bc98d585f99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rollSpeed: 5
+  _rollSpeed: 2.5
   _gameController: {fileID: 3385918}
   _floorController: {fileID: 2102572143}
   _projectile: {fileID: 4930401841867257341, guid: 56d623b0c8a2b034dbd73c5fc6afdfe9, type: 3}
