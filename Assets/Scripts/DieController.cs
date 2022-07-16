@@ -14,6 +14,11 @@ public class DieController : MonoBehaviour
 
     [SerializeField] private int spawnX;
     [SerializeField] private int spawnY;
+    [SerializeField] private int playerType;
+
+    public const int PTYPE_PLAYER_ONE = 1;
+    public const int PTYPE_PLAYER_TWO = 2;
+    public const int PTYPE_ENEMY = 3;
 
     private int id;
     private bool _isMoving;
