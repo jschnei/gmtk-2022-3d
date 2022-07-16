@@ -156,6 +156,8 @@ MonoBehaviour:
   _levelData: {fileID: 4900000, guid: 13ea8ed1bd8cce946adbb1bf7c5f41a1, type: 3}
   gridWidth: 0
   gridHeight: 0
+  healthBarP1: {fileID: 1361758251}
+  healthBarP2: {fileID: 1568018194}
 --- !u!4 &3385919
 Transform:
   m_ObjectHideFlags: 0
