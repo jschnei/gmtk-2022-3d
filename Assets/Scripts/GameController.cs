@@ -10,7 +10,8 @@ public class DieState {
     public int prevPosX = -1;
     public int prevPosY = -1;
 
-    public int health = 3;
+    public int health = 1;
+    public bool isDead = false;
 
     // faces stored as [top, bottom, front, back, left, right]
     const int D_TOP = 0;
@@ -251,6 +252,7 @@ public class GameController : MonoBehaviour
     } 
 
     public bool MovePlayerToSquare(int x, int y, int p) {
+        if (_dice[p].isDead) return false;
         if (!canMoveSquare(x, y)) return false;
 
         _dice[p].SetPosition(x,  y);
@@ -259,6 +261,8 @@ public class GameController : MonoBehaviour
     }
 
     public bool PlayerRoll(int dir, int p) {
+        if (_dice[p].isDead) return false;
+
         int nX = _dice[p].posX + DELTA_X[dir];
         int nY = _dice[p].posY + DELTA_Y[dir];
 
@@ -292,21 +296,25 @@ public class GameController : MonoBehaviour
         _dice[p].ClearPreviousPosition();
     }
 
-    public void CheckPowerup(int i) {
-        if (_dice[i].GetBottom() == tileStates[_dice[i].posY, _dice[i].posX]) {
-            _floorController.RemovePowerup(_dice[i].posX, _dice[i].posY);
+    public void CheckPowerup(int p) {
+        if (_dice[p].isDead) return;
 
-            int puVal = _dice[i].GetBottom();
+        if (_dice[p].GetBottom() == tileStates[_dice[p].posY, _dice[p].posX]) {
+            _floorController.RemovePowerup(_dice[p].posX, _dice[p].posY);
 
-            if (!_dice[i].powered[puVal]) {
-                _dieControllers[i].ApplyPowerup(puVal);
-                _dice[i].PowerupFace(puVal);
+            int puVal = _dice[p].GetBottom();
+
+            if (!_dice[p].powered[puVal]) {
+                _dieControllers[p].ApplyPowerup(puVal);
+                _dice[p].PowerupFace(puVal);
             }
         }
     }
 
     public void ActivatePowerup(int p) {
+        if (_dice[p].isDead) return;
         if (!IsTopActive(p)) return;
+
         _dieControllers[p].UnapplyPowerup(_dice[p].GetTop());
         _dice[p].PowerdownFace(_dice[p].GetTop());
         _floorController.UpdateTargets();
@@ -317,10 +325,13 @@ public class GameController : MonoBehaviour
     }
 
     public bool IsTopActive(int p) {
+        if (_dice[p].isDead) return false;
+
         return _dice[p].IsPowered(_dice[p].GetTop());
     }
 
     public bool IsTargetableSquare(int x, int y, int p) {
+        if (_dice[p].isDead) return false;
         if (!IsTopActive(p)) return false;
         int xDelta = x - _dice[p].posX;
         int yDelta = y - _dice[p].posY;
@@ -337,6 +348,7 @@ public class GameController : MonoBehaviour
     public void AttackTargets(List<Tile> targets) {
         foreach (Tile tile in targets) {
             for(int p = 0; p < _dice.Count; p++) {
+                if (_dice[p].isDead) continue;
                 bool playerOnTile = _dice[p].posX == tile.x && _dice[p].posY == tile.y;
                 bool movingPlayerWasOnTile = _dieControllers[p].IsMoving() && _dice[p].prevPosX == tile.x && _dice[p].prevPosY == tile.y;
                 if (playerOnTile || movingPlayerWasOnTile) {
@@ -347,6 +359,7 @@ public class GameController : MonoBehaviour
     }
 
     public void EnemyAttack(int attack, int p) {
+        if (_dice[p].isDead) return;
         List<Tile> targets = GetEnemyAttackTargets(attack, p);
 
         if (targets.Count == 0) return;
@@ -367,16 +380,30 @@ public class GameController : MonoBehaviour
                     validTiles.Add(new Tile(newX, newY, 0));
                 }
             }
-            
         }
 
         return validTiles;
     }
 
     public void AttackPlayer(int p) {
+        if (_dice[p].isDead) return;
+
         _dice[p].GetHit();
 
         Debug.Log("Die " + p + " hit! Health " + _dice[p].health);
+
+        if (_dice[p].health == 0) {
+            KillPlayer(p);
+        }
+    }
+
+    public void KillPlayer(int p) {
+        if (_dice[p].isDead) return;
+
+        _dice[p].isDead = true;
+        _dice[p].posX = -1;
+        _dice[p].posY = -1;
+        _dieControllers[p].Die();
     }
 
     // Gets all valid tiles at the given Manhattan
