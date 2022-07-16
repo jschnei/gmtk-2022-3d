@@ -11,7 +11,8 @@ public class FloorController : MonoBehaviour
     [SerializeField] private GameObject _wallPrefab;
     [SerializeField] private GameObject _targetPrefab;
     [SerializeField] private GameObject _explosionPrefab;
-    [SerializeField] private GameObject _enemyPrefab;
+    
+    [SerializeField] private GameObject[] _diePrefabs;
 
     Timer _spawnTimer;
     public const int SPAWN_INTERVAL = 5;
@@ -78,10 +79,18 @@ public class FloorController : MonoBehaviour
         if (powerups[squareY, squareX] != null) Destroy(powerups[squareY, squareX]);
     }
 
-    public void SpawnEnemy(int x, int y) {
-        GameObject newEnemy = Instantiate(_enemyPrefab, transform.position, Quaternion.identity);
-        newEnemy.transform.position = GetSquareCenter(x, y);
-        enemies[y, x] = newEnemy;
+    public void SpawnDie(int x, int y, int type) {
+        GameObject newDie = Instantiate(_diePrefabs[type], transform.position, Quaternion.identity);
+        DieController controller = newDie.GetComponent<DieController>();
+        
+        controller.spawnX = x;
+        controller.spawnY = y;
+        controller.playerType = type;
+
+        controller.SetupControllers();
+
+        // newEnemy.transform.position = GetSquareCenter(x, y);
+        // enemies[y, x] = newEnemy;
     }
 
     public void RemoveEnemy(int x, int y) {

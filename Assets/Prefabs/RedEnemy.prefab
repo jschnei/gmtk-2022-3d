@@ -107,6 +107,7 @@ MonoBehaviour:
   _powerupMaterials: []
   spawnX: 0
   spawnY: 0
+  playerType: 3
 --- !u!114 &8983824969595435953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,3 +121,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dieController: {fileID: 3585842235876882929}
+  aiType: 2

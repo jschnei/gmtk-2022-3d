@@ -12,9 +12,10 @@ public class DieController : MonoBehaviour
     [SerializeField] private Material[] _standardMaterials;
     [SerializeField] private Material[] _powerupMaterials;
 
-    [SerializeField] private int spawnX;
-    [SerializeField] private int spawnY;
-    [SerializeField] private int playerType;
+    [SerializeField] public int spawnX;
+    [SerializeField] public int spawnY;
+    [SerializeField] public int playerType;
+
     [SerializeField] private Image healthBarImage;
 
     public const int PTYPE_PLAYER_ONE = 1;
@@ -23,6 +24,12 @@ public class DieController : MonoBehaviour
 
     private int id;
     private bool _isMoving;
+
+    public void SetupControllers()
+    {
+        _floorController = GameObject.Find("Floor").GetComponent<FloorController>();
+        _gameController = GameObject.Find("GameController").GetComponent<GameController>();
+    }
 
     // Start is called before the first frame update
     void Start()

@@ -182,10 +182,16 @@ public class GameController : MonoBehaviour
         for (int y = 0; y < gridHeight; y++)
         {
             string line = lines[y+1];
-            string[] pieces = line.Split(',');
+            // string[] pieces = line.Split(',');
             for (int x=0; x < gridWidth; x++)
             {
-                tileStates[y, x] = int.Parse(pieces[x]);
+                if (line[x] == '#') {
+                    tileStates[y, x] = -1;
+                } else if (line[x] == 'R') {
+                    // make new red enemy at (y, x)
+                    SpawnDie(x, y);
+                }
+                // tileStates[y, x] = int.Parse(pieces[x]);
             }
         }
 
@@ -209,7 +215,6 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        // SpawnEnemy(10, 10);
     }
 
     public const int SPAWN_RETRIES = 10;
@@ -229,12 +234,9 @@ public class GameController : MonoBehaviour
         return new Tile(-1, -1, -1);
     }
 
-    // public void SpawnEnemy(int x, int y) {
-    //     DieState enemyState = new DieState();
-    //     enemyState.SetPosition(x, y);
-    //     _enemyDice.Add(enemyState);
-    //     _floorController.SpawnEnemy(x, y);
-    // }
+    public void SpawnDie(int x, int y) {
+        _floorController.SpawnDie(x, y, DieController.PTYPE_ENEMY);
+    }
 
     bool isValidSquare(int x, int y) {
         if (x < 0 || y < 0 || x >= gridWidth || y >= gridHeight || tileStates[y,x] == -1) return false;
