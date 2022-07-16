@@ -540,6 +540,22 @@ MonoBehaviour:
   _gameController: {fileID: 3385918}
   _floorController: {fileID: 2102572143}
   _projectile: {fileID: 4930401841867257341, guid: 56d623b0c8a2b034dbd73c5fc6afdfe9, type: 3}
+  _standardMaterials:
+  - {fileID: 0}
+  - {fileID: 2100000, guid: cbf37ca66caeeb64e9818bc85ec12c09, type: 2}
+  - {fileID: 2100000, guid: 0478f75957d3af440bb2aeb5af0a4d74, type: 2}
+  - {fileID: 2100000, guid: 03b74e70d4a270c40b5d88dec4d8c327, type: 2}
+  - {fileID: 2100000, guid: aa78a693429ab9d4383ad8357bb4bfc6, type: 2}
+  - {fileID: 2100000, guid: a033bf2a84109244db8fe847b71974dc, type: 2}
+  - {fileID: 2100000, guid: 5025cce6f78cee84eab90f7597297576, type: 2}
+  _powerupMaterials:
+  - {fileID: 0}
+  - {fileID: 2100000, guid: 5bee1274658e82141ba41715c101693a, type: 2}
+  - {fileID: 2100000, guid: c9f9adb33a9cc0c4d8f59abe2064e979, type: 2}
+  - {fileID: 2100000, guid: 8cd424bab0aa8164e9545f3fc5164e9e, type: 2}
+  - {fileID: 2100000, guid: 9cd145ab0b5ba6c4d9cbcd8ddf5747cc, type: 2}
+  - {fileID: 2100000, guid: d476ca7d034595f42acd1266a4d64eed, type: 2}
+  - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}
 --- !u!1 &786455466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,7 +1074,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameController: {fileID: 3385918}
   _powerupPrefab: {fileID: 2423062814266964616, guid: bba7677bb3155b84a97669291db02653, type: 3}
-  _wallPrefab: {fileID: 506076394723961888, guid: 918b54f0bfbc6c84ebc9b2c97ab3193c, type: 3}
   _powerupMaterials:
   - {fileID: 0}
   - {fileID: 2100000, guid: 5bee1274658e82141ba41715c101693a, type: 2}
@@ -1067,3 +1082,4 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9cd145ab0b5ba6c4d9cbcd8ddf5747cc, type: 2}
   - {fileID: 2100000, guid: d476ca7d034595f42acd1266a4d64eed, type: 2}
   - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}
+  _wallPrefab: {fileID: 506076394723961888, guid: 918b54f0bfbc6c84ebc9b2c97ab3193c, type: 3}
