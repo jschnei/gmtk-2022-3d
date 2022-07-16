@@ -88,7 +88,7 @@ public class FloorController : MonoBehaviour
         }
     }
 
-    public void UpdateTargets(int p) {
+    public void UpdateTargets() {
         for (int i=0; i<targetIndicators.GetLength(0); i++) {
             for (int j=0; j<targetIndicators.GetLength(1); j++) {
                 if (targetIndicators[i,j] == null && _gameController.IsTargetableByAny(i, j)) {

@@ -8,6 +8,8 @@ public class DieState {
     public int posX = -1;
     public int posY = -1;
 
+    public int health = 3;
+
     // faces stored as [top, bottom, front, back, left, right]
     const int D_TOP = 0;
     const int D_BOTTOM = 1;
@@ -95,6 +97,10 @@ public class DieState {
 
     public bool IsPowered(int face) {
         return powered[face];
+    }
+
+    public void GetHit() {
+        health--;
     }
 }
 
@@ -193,6 +199,11 @@ public class GameController : MonoBehaviour
 
     bool isValidSquare(int x, int y) {
         if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE || tileStates[y,x] == -1) return false;
+        return true;
+    }
+
+    bool canMoveSquare(int x, int y) {
+        if (!isValidSquare(x, y)) return false;
 
         foreach (DieState die in _dice) {
             if (die.posX == x && die.posY == y) return false;
@@ -202,7 +213,7 @@ public class GameController : MonoBehaviour
     } 
 
     public bool MovePlayerToSquare(int x, int y, int p) {
-        if (!isValidSquare(x, y)) return false;
+        if (!canMoveSquare(x, y)) return false;
 
         _dice[p].SetPosition(x,  y);
 
@@ -213,7 +224,7 @@ public class GameController : MonoBehaviour
         int nX = _dice[p].posX + DELTA_X[dir];
         int nY = _dice[p].posY + DELTA_Y[dir];
 
-        if (!isValidSquare(nX, nY)) return false;
+        if (!canMoveSquare(nX, nY)) return false;
 
         switch (dir) {
             case DIR_UP:
@@ -234,7 +245,7 @@ public class GameController : MonoBehaviour
         }
 
         CheckPowerup(p);
-        _floorController.UpdateTargets(p);
+        _floorController.UpdateTargets();
 
         return true;
     }
@@ -256,8 +267,11 @@ public class GameController : MonoBehaviour
         if (!IsTopActive(p)) return;
         _dieControllers[p].UnapplyPowerup(_dice[p].GetTop());
         _dice[p].PowerdownFace(_dice[p].GetTop());
-        _floorController.UpdateTargets(p);
-        _floorController.ExplodeTiles(GetTiles(_dice[p].GetTop(), p));
+        _floorController.UpdateTargets();
+
+        List<Tile> targets = GetTiles(_dice[p].GetTop(), p);
+        AttackTargets(targets);
+        _floorController.ExplodeTiles(targets);
     }
 
     public bool IsTopActive(int p) {
@@ -276,6 +290,23 @@ public class GameController : MonoBehaviour
             if (IsTargetableSquare(x, y, p)) return true;
         }
         return false;
+    }
+
+    public void AttackTargets(List<Tile> targets) {
+        Debug.Log("Attacking targets!");
+        foreach (Tile tile in targets) {
+            for(int p = 0; p < _dice.Count; p++) {
+                if (_dice[p].posX == tile.x && _dice[p].posY == tile.y) {
+                    AttackPlayer(p);
+                }
+            }
+        }
+    }
+
+    public void AttackPlayer(int p) {
+        _dice[p].GetHit();
+
+        Debug.Log("Die " + p + " hit! Health " + _dice[p].health);
     }
 
     // Gets all valid tiles at the given Manhattan
