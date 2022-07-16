@@ -106,11 +106,18 @@ public class GameController : MonoBehaviour
     //  -1 = impassable (i.e., wall)
     //  0 = regular tile
     //  1-6 = powerup (with this label)
-    private int[,] tileStates;
+    public int[,] tileStates;
+
 
     void Start()
     {
         tileStates = new int[GRID_SIZE, GRID_SIZE];
+        // Set some arbitrary walls, eventually this should be passed in.
+        tileStates[1, 8] = -1;
+        tileStates[9, 4] = -1;
+        for (int i=0; i<17; i++) {
+            tileStates[i, 5] = -1;
+        }
         _playerDie = new DieState();
     }
 

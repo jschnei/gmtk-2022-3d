@@ -6,15 +6,19 @@ public class FloorController : MonoBehaviour
 {
     [SerializeField] private GameController _gameController;
     [SerializeField] private GameObject _powerupPrefab;
+    [SerializeField] private GameObject _wallPrefab;
 
     // TODO: do timer correctly
     private int _spawnTimer = 0;
     public const int SPAWN_INTERVAL = 600;
 
+    private GameObject[,] walls;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        int gridSize = GameController.GRID_SIZE;
+        walls = new GameObject[gridSize, gridSize];
     }
 
     // Update is called once per frame
@@ -25,6 +29,7 @@ public class FloorController : MonoBehaviour
             _spawnTimer = 0;
             SpawnPowerup();
         }
+        UpdateWalls();
     }
 
     void SpawnPowerup() {
@@ -34,6 +39,23 @@ public class FloorController : MonoBehaviour
 
         GameObject newPowerup = Instantiate(_powerupPrefab, transform.position, Quaternion.identity);
         newPowerup.transform.position = GetSquareCenter(tile.x, tile.y);        
+    }
+
+    // Uses tileStates to add or remove walls as needed.
+    private void UpdateWalls() {
+        int[,] tileStates = _gameController.tileStates;
+        for (int i=0; i<tileStates.GetLength(0); i++) {
+            for (int j=0; j<tileStates.GetLength(1); j++) {
+                if (tileStates[i,j] == -1 && walls[i,j] == null) {
+                    GameObject newWall = Instantiate(_wallPrefab, transform.position, Quaternion.identity);
+                    newWall.transform.position = GetSquareCenter(j, i);
+                    walls[i,j] = newWall;
+                } else if (tileStates[i,j] != -1 && walls[i,j] != null) {
+                    Destroy(walls[i,j]);
+                    walls[i,j] = null;
+                }
+            }
+        }
     }
 
     public Vector3 GetSquareCenter(int squareX, int squareY) {
