@@ -143,12 +143,6 @@ public class GameController : MonoBehaviour
 
     void Awake() {       
         LoadLevel();
-        
-        // tileStates[1, 8] = -1;
-        // tileStates[9, 4] = -1;
-        // for (int i=0; i<17; i++) {
-        //     tileStates[i, 5] = -1;
-        // }
 
         _dieControllers = new List<DieController>();
         _dice = new List<DieState>();
