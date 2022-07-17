@@ -162,6 +162,8 @@ public class GameController : MonoBehaviour
 
     private int totalPowerups = 0; // only used in powerwash mode
     public bool gameFinished = false;
+    [SerializeField] private float _finishDelay = 3;
+    private float _finishTimer = 0;
 
     // TODO: move to UI controller?
     [SerializeField] private Image healthBarP1;
@@ -272,8 +274,14 @@ public class GameController : MonoBehaviour
     }
 
     void Update() {
-        if (gameFinished && Input.GetKey(KeyCode.Escape)) {
-            SceneManager.LoadScene("TitleScene");
+        if (gameFinished) {
+            _finishTimer += Time.deltaTime;
+            if (_finishTimer > _finishDelay && !endScreen.activeSelf) {
+                endScreen.SetActive(true);
+            }
+            if (endScreen.activeSelf && Input.GetKey(KeyCode.Escape)) {
+                SceneManager.LoadScene("TitleScene");
+            }
         }
     }
 
@@ -508,7 +516,7 @@ public class GameController : MonoBehaviour
     }
 
     public void FinishGame() {
-        endScreen.SetActive(true);
+
         gameFinished = true;
     }
 
