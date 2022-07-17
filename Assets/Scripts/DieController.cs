@@ -23,6 +23,10 @@ public class DieController : MonoBehaviour
     private int id;
     private bool _isMoving;
 
+    private bool _isStunned = false;
+    public const float STUN_DURATION = 5;
+    private float _stunTime = 0;
+
     public void SetupControllers()
     {
         _floorController = GameObject.Find("Floor").GetComponent<FloorController>();
@@ -52,10 +56,16 @@ public class DieController : MonoBehaviour
     }
 
     public void HandleInput(int input) {
+        if (_isStunned) {
+            _stunTime += Time.deltaTime;
+            if (_stunTime > STUN_DURATION) {
+                Unstun();
+            }
+            return;
+        }
         if (_isMoving) return;
 
         if (input == -1) return;
-
         switch(input) {
             case INPUT_LEFT:
                 if (_gameController.PlayerRoll(GameController.DIR_LEFT, id)) Assemble(Vector3.left);
@@ -135,5 +145,21 @@ public class DieController : MonoBehaviour
         exploder.Explode();
         // Destroy(this.gameObject);
         // Destroy(this);
+    }
+
+    public void Stun() {
+        _isStunned = true;
+        _stunTime = 0;
+
+        for (int i=1; i<=6; i++) {
+            transform.Find("Face" + i).GetComponent<Renderer>().material.SetColor("_Color", new Color(0.4f, 0.4f, 0.4f, 0.9f));
+        }
+    }
+
+    public void Unstun() {
+        _isStunned = false;
+        for (int i=1; i<=6; i++) {
+            transform.Find("Face" + i).GetComponent<Renderer>().material.SetColor("_Color", new Color(1, 1, 1, 0.5f));
+        }
     }
 }
