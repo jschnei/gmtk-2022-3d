@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 public class DieState {
     const bool VERBOSE = false;
     public const int MAX_HEALTH = 3;
@@ -158,6 +160,8 @@ public class GameController : MonoBehaviour
     // TODO: move to UI controller?
     [SerializeField] private Image healthBarP1;
     [SerializeField] private Image healthBarP2;
+    [SerializeField] private TextMeshProUGUI scoreTextP1;
+    [SerializeField] private TextMeshProUGUI scoreTextP2;
 
     private List<DieController> _dieControllers;
     private List<DieState> _dice;
@@ -175,6 +179,11 @@ public class GameController : MonoBehaviour
 
         _dieControllers = new List<DieController>();
         _dice = new List<DieState>();
+
+        if (Globals.gameType == GameType.Race) {
+            UpdateScore(DieController.PTYPE_PLAYER_ONE, 0);
+            UpdateScore(DieController.PTYPE_PLAYER_TWO, 0);
+        }
     }
 
     void LoadLevel() {
@@ -320,6 +329,7 @@ public class GameController : MonoBehaviour
             _floorController.RemovePowerup(_dice[p].posX, _dice[p].posY);
             tileStates[_dice[p].posY, _dice[p].posX] = 0;
             _dice[p].IncrementPowerupCount();
+            UpdateScore(_dieControllers[p].playerType, _dice[p].totalPowerups);
 
             int puVal = _dice[p].GetBottom();
 
@@ -450,6 +460,16 @@ public class GameController : MonoBehaviour
             healthBarP1.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
         } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
             healthBarP2.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
+        }
+    }
+
+    public void UpdateScore(int ptype, int score) {
+        if (Globals.gameType != GameType.Race) return;
+        Debug.Log("updating score with player " + ptype + " and score " + score);
+        if (ptype == DieController.PTYPE_PLAYER_ONE) {
+            scoreTextP1.text = score + "/10";
+        } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
+            scoreTextP2.text = score + "/10";
         }
     }
 }

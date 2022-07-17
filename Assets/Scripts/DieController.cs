@@ -16,8 +16,6 @@ public class DieController : MonoBehaviour
     [SerializeField] public int spawnY;
     [SerializeField] public int playerType;
 
-    [SerializeField] private Image healthBarImage;
-
     public const int PTYPE_PLAYER_ONE = 1;
     public const int PTYPE_PLAYER_TWO = 2;
     public const int PTYPE_ENEMY = 3;
@@ -128,10 +126,6 @@ public class DieController : MonoBehaviour
 
     public void UnapplyPowerup(int face) {
         transform.Find("Face" + face).GetComponent<Renderer>().material = _standardMaterials[face];
-    }
-
-    public void AdjustHealthbar(int health) {
-        if (healthBarImage != null) healthBarImage.fillAmount = Mathf.Clamp((float)health / DieState.MAX_HEALTH, 0, 1f);
     }
 
     public void Die() {
