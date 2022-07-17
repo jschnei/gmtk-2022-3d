@@ -55,17 +55,22 @@ public class FloorController : MonoBehaviour
     {
         if (!isActive) return;
 
-        _spawnTimer.UpdateTimer(Time.deltaTime);
-        if (_spawnTimer.IsOver()) {
-            SpawnPowerup();
-            _spawnTimer = new Timer(SPAWN_INTERVAL);
+        if (Globals.gameType != GameType.Powerwash) {
+            _spawnTimer.UpdateTimer(Time.deltaTime);
+            if (_spawnTimer.IsOver()) {
+                SpawnPowerup();
+                _spawnTimer = new Timer(SPAWN_INTERVAL);
+            }
         }
+
         UpdateWalls();
     }
 
     public void SpawnPowerup() {
-        Tile tile = _gameController.SpawnPowerup();
+        InitializePowerup(_gameController.SpawnPowerup());
+    }
 
+    public void InitializePowerup(Tile tile) {
         if (tile.value == -1) return;
 
         GameObject newPowerup = Instantiate(_powerupPrefab, transform.position, Quaternion.identity);
