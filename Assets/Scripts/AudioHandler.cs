@@ -23,6 +23,10 @@ public class AudioHandler : MonoBehaviour
             transform.Find("UsePowerup").GetComponent<AudioSource>().Play();
         } else if (soundName == "hit") {
             transform.Find("Hit").GetComponent<AudioSource>().Play();       
+        } else if (soundName == "walk") {
+            transform.Find("Walk").GetComponent<AudioSource>().Play();       
+        } else if (soundName == "stun") {
+            transform.Find("Stun").GetComponent<AudioSource>().Play();       
         }
     }
 }

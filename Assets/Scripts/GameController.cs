@@ -566,6 +566,7 @@ public class GameController : MonoBehaviour
             }
         } else if (Globals.gameType == GameType.Race) {
             _dieControllers[p].Stun();
+            PlaySound("stun");
         }
     }
 
@@ -604,6 +605,7 @@ public class GameController : MonoBehaviour
                 for (int i=0; i<_dice.Count; i++) {
                     if (i != winningPlayer) KillPlayer(i);
                 }
+                PlaySound("hit");
                 FinishGame();
                 UpdateWinnerText(_dieControllers[winningPlayer].playerType);
             }
