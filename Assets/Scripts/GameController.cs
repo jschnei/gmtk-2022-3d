@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -159,11 +160,16 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_X = {0, 0, -1, 1};
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
+    private int totalPowerups = 0; // only used in powerwash mode
+    public bool gameFinished = false;
+
     // TODO: move to UI controller?
     [SerializeField] private Image healthBarP1;
     [SerializeField] private Image healthBarP2;
     [SerializeField] private TextMeshProUGUI scoreTextP1;
     [SerializeField] private TextMeshProUGUI scoreTextP2;
+    [SerializeField] private GameObject endScreen;
+    [SerializeField] private TextMeshProUGUI winText;
 
     private List<DieController> _dieControllers;
     private List<DieState> _dice;
@@ -176,7 +182,9 @@ public class GameController : MonoBehaviour
     //  1-6 = powerup (with this label)
     public int[,] tileStates;
 
-    void Awake() {      
+    void Awake() {    
+        endScreen.SetActive(false);
+
         LoadLevel();
 
         _dieControllers = new List<DieController>();
@@ -235,6 +243,7 @@ public class GameController : MonoBehaviour
                         int randVal = (int)(Random.value * 6) + 1;
                         tileStates[y, x] = randVal;
                         _floorController.InitializePowerup(new Tile(x, y, randVal));
+                        totalPowerups += 1;
                     }
                 }
                 // tileStates[y, x] = int.Parse(pieces[x]);
@@ -260,6 +269,12 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+    }
+
+    void Update() {
+        if (gameFinished && Input.GetKey(KeyCode.Escape)) {
+            SceneManager.LoadScene("TitleScene");
+        }
     }
 
     public const int SPAWN_RETRIES = 10;
@@ -311,6 +326,7 @@ public class GameController : MonoBehaviour
 
     public bool PlayerRoll(int dir, int p) {
         if (_dice[p].isDead) return false;
+        if (gameFinished) return false;
 
         int nX = _dice[p].posX + DELTA_X[dir];
         int nY = _dice[p].posY + DELTA_Y[dir];
@@ -369,6 +385,7 @@ public class GameController : MonoBehaviour
     public void ActivatePowerup(int p) {
         if (_dice[p].isDead) return;
         if (!IsTopActive(p)) return;
+        if (gameFinished) return;
 
         _dieControllers[p].UnapplyPowerup(_dice[p].GetTop());
         _dice[p].PowerdownFace(_dice[p].GetTop());
@@ -468,6 +485,31 @@ public class GameController : MonoBehaviour
         // _dice[p].posX = -1;
         // _dice[p].posY = -1;
         _dieControllers[p].Die();
+        CheckGameFinish();
+    }
+
+    public void CheckGameFinish() {
+        if (Globals.gameType == GameType.Battle) {
+            int numAlive = 0;
+            int indexAlive = 0;
+            for (int i=0; i<_dice.Count; i++) {
+                if (!_dice[i].isDead) {
+                    numAlive += 1;
+                    indexAlive = i;
+                }
+            }
+            if (numAlive == 1) {
+                FinishGame();
+                UpdateWinnerText(_dieControllers[indexAlive].playerType);
+            }
+        } else if (Globals.gameType == GameType.Powerwash) {
+
+        }
+    }
+
+    public void FinishGame() {
+        endScreen.SetActive(true);
+        gameFinished = true;
     }
 
     // Gets all valid tiles at the given Manhattan
@@ -495,11 +537,18 @@ public class GameController : MonoBehaviour
 
     public void UpdateScore(int ptype, int score) {
         if (Globals.gameType != GameType.Powerwash && Globals.gameType != GameType.Race) return;
-        Debug.Log("updating score with player " + ptype + " and score " + score);
         if (ptype == DieController.PTYPE_PLAYER_ONE) {
             scoreTextP1.text = score + "/10";
         } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
             scoreTextP2.text = score + "/10";
+        }
+    }
+
+    public void UpdateWinnerText(int ptype) {
+        if (ptype == DieController.PTYPE_PLAYER_ONE) {
+            winText.text = "Player 1 wins!";
+        } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
+            winText.text = "Player 2 wins!";
         }
     }
 
