@@ -29,4 +29,11 @@ public class TitleMenu : MonoBehaviour {
         Globals.gameType = GameType.Powerwash;
         SceneManager.LoadScene("MainScene");
     }
+
+    public void HumanToggle() {
+        Globals.playVsHuman = true;
+    }
+    public void AIToggle() {
+        Globals.playVsHuman = false;
+    }
 }

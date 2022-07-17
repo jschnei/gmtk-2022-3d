@@ -1795,6 +1795,7 @@ MonoBehaviour:
   scoreTextP2: {fileID: 0}
   endScreen: {fileID: 0}
   winText: {fileID: 0}
+  audioObject: {fileID: 0}
 --- !u!4 &1016963028
 Transform:
   m_ObjectHideFlags: 0
@@ -2340,7 +2341,19 @@ MonoBehaviour:
   m_Group: {fileID: 1403359330}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1231985532}
+        m_TargetAssemblyTypeName: TitleMenu, Assembly-CSharp
+        m_MethodName: AIToggle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &1226724587
 GameObject:
@@ -3727,7 +3740,19 @@ MonoBehaviour:
   m_Group: {fileID: 1403359330}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1231985532}
+        m_TargetAssemblyTypeName: TitleMenu, Assembly-CSharp
+        m_MethodName: HumanToggle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &1799127365
 GameObject:
