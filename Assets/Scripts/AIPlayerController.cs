@@ -7,10 +7,19 @@ public class AIPlayerController : MonoBehaviour
     [SerializeField] private DieController _dieController;
     [SerializeField] private GameController _gameController;
     [SerializeField] private int aiType = 1;
-    
-    [SerializeField] private int difficultySearch = 100;
-    [SerializeField] private float difficultyWait = 0.1f;
-    [SerializeField] private float difficultyAttack = 0.2f;
+    [SerializeField] private int _difficulty = 0;
+
+    private float _difficultyWait;
+    private float _difficultyAttack;
+
+    public const int DIFFICULTY_EASY = 0;
+    public const int DIFFICULTY_MEDIUM = 1;
+    public const int DIFFICULTY_HARD = 2;
+    public const int DIFFICULTY_BRUTAL = 3;
+
+    public static readonly float[] WAIT_PROBS = {0.05f, 0.1f, 0.4f, 1.0f};
+    public static readonly float[] ATTACK_PROBS = {0.2f, 0.3f, 0.6f, 1.0f};
+
 
     private StateMachine _aiStateMachine;
 
@@ -23,15 +32,16 @@ public class AIPlayerController : MonoBehaviour
     private int curInd = 0;
     private Dictionary<string, DieState> stateLookup;
 
-    // public static readonly int[] DIFFICULTY_WAIT = {8, 4, 0};
-    // public static readonly int[] DIFFICULTY_SEARCH = {20, 100, 1000};
-    // public static readonly float[] DIFFICULTY_ATTACK = {0.2, 0.5, 1.0};
+    public const int MAX_BFS_SEARCH = 5000;
 
     // Start is called before the first frame update
     void Start()
     {
         curPath = new List<int>();  
         stateLookup = new Dictionary<string, DieState>(); 
+
+        _difficultyWait = WAIT_PROBS[_difficulty];
+        _difficultyAttack = ATTACK_PROBS[_difficulty];
 
         _gameController = _dieController.GetGameController();
     }
@@ -57,7 +67,7 @@ public class AIPlayerController : MonoBehaviour
         int bfsInd = 0;
 
         while (bfsInd < bfs.Count 
-               && bfsInd < difficultySearch) {
+               && bfsInd < MAX_BFS_SEARCH) {
             string curString = bfs[bfsInd];
             bfsInd++;
 
@@ -109,14 +119,14 @@ public class AIPlayerController : MonoBehaviour
 
         if (_gameController.IsTopActive(_dieController.id)) {
             // attack if would hit
-            if (Random.value > difficultyAttack &&
+            if (Random.value > _difficultyAttack &&
                     _gameController.CanHit(_dieController.id)) {
                 return DieController.INPUT_ACTIVATE;
             }
         }
 
         if (curInd >= curPath.Count) {
-            if (Random.value > difficultyWait) return RandomDirection();
+            if (Random.value > _difficultyWait) return RandomDirection();
             if (!_gameController.AnyPowerups()) return RandomDirection();
 
             curPath = GetNewPath();
