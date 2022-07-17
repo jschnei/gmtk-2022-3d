@@ -1738,6 +1738,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 5728e7d4baf81084f99fc51f9564825c, type: 2}
   _wallPrefab: {fileID: 506076394723961888, guid: 918b54f0bfbc6c84ebc9b2c97ab3193c, type: 3}
   _targetPrefab: {fileID: 5123963826186022983, guid: 5c86c8731af786a4b99f49808e9fa132, type: 3}
+  _targetPrefab2: {fileID: 5123963826186022983, guid: 83ec000d02e1ef14d88076cae1ea6bd0, type: 3}
   _explosionPrefab: {fileID: 5841590690080433339, guid: 35489be13b0e36f4097f4adf65d9f33d, type: 3}
   _diePrefabs:
   - {fileID: 0}

@@ -10,6 +10,7 @@ public class FloorController : MonoBehaviour
     [SerializeField] private Material[] _powerupMaterials;
     [SerializeField] private GameObject _wallPrefab;
     [SerializeField] private GameObject _targetPrefab;
+    [SerializeField] private GameObject _targetPrefab2;
     [SerializeField] private GameObject _explosionPrefab;
     
     [SerializeField] private GameObject[] _diePrefabs;
@@ -124,11 +125,18 @@ public class FloorController : MonoBehaviour
 
         for (int i=0; i<targetIndicators.GetLength(0); i++) {
             for (int j=0; j<targetIndicators.GetLength(1); j++) {
-                if (targetIndicators[i,j] == null && _gameController.IsTargetableByAny(i, j)) {
-                    GameObject newTarget = Instantiate(_targetPrefab, transform.position, Quaternion.identity);
+                int p = _gameController.IsTargetableByAny(i, j);
+                if (targetIndicators[i,j] == null && p != -1) {
+                    GameObject newTarget;
+                    if(_gameController.isPlayerOne(p)) {
+                        newTarget = Instantiate(_targetPrefab, transform.position, Quaternion.identity);
+                    } else {
+                        newTarget = Instantiate(_targetPrefab2, transform.position, Quaternion.identity);
+                    }
                     newTarget.transform.position = GetSquareCenter(i, j);
                     targetIndicators[i,j] = newTarget;
-                } else if (targetIndicators[i,j] != null && !_gameController.IsTargetableByAny(i, j)) {
+                }
+                if (targetIndicators[i,j] != null && p == -1) {
                     Destroy(targetIndicators[i,j]);
                     targetIndicators[i,j] = null;
                 }
