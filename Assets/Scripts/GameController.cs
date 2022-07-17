@@ -249,7 +249,6 @@ public class GameController : MonoBehaviour
         gridWidth = int.Parse(dims[0]);
         gridHeight = int.Parse(dims[1]);
 
-        Debug.Log(gridHeight + " " + gridWidth);
         _floorController.InitializeFloor(gridWidth, gridHeight);
         tileStates = new int[gridHeight, gridWidth];
 
