@@ -216,6 +216,7 @@ MonoBehaviour:
   _dieController: {fileID: 371916202}
   _gameController: {fileID: 0}
   aiType: 1
+  _difficulty: 0
 --- !u!114 &371916202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -434,7 +435,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &596898183
 MonoBehaviour:
   m_ObjectHideFlags: 0
