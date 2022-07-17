@@ -29,8 +29,6 @@ public class AIPlayerController : MonoBehaviour
     }
 
     List<int> GetNewPath() {
-        Debug.Log("looking for path");
-
         List<string> bfs = new List<string>();
         Dictionary<string, string> parent = new Dictionary<string, string>();
         Dictionary<string, int> parentEdge = new Dictionary<string, int>();
@@ -46,13 +44,9 @@ public class AIPlayerController : MonoBehaviour
 
         int bfsInd = 0;
 
-        Debug.Log("START BFS");
-
         while (bfsInd < bfs.Count) {
             string curString = bfs[bfsInd];
             bfsInd++;
-
-            Debug.Log(bfsInd + " " + curString);
 
             DieState curState = stateLookup[curString];
             
@@ -66,9 +60,6 @@ public class AIPlayerController : MonoBehaviour
                 }
 
                 path.Reverse();
-
-                Debug.Log("found path to state of length " + path.Count);
-                Debug.Log("Path " + path);
 
                 return path;
             }
