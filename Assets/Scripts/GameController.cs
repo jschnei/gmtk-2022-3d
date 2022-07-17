@@ -144,6 +144,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private FloorController _floorController;
     [SerializeField] private TextAsset _defaultLevelData;
     [SerializeField] private TextAsset _raceLevelData;
+    [SerializeField] private TextAsset _powerwashLevelData;
 
     // public const int GRID_SIZE = 20;
 
@@ -194,6 +195,8 @@ public class GameController : MonoBehaviour
         TextAsset levelData;
         if (Globals.gameType == GameType.Race) {
             levelData = _raceLevelData;
+        } else if (Globals.gameType == GameType.Powerwash) {
+            levelData = _powerwashLevelData;
         } else {
             levelData = _defaultLevelData;
         }
@@ -225,8 +228,9 @@ public class GameController : MonoBehaviour
                 } else if (line[x] == '2') {
                     // player 1 spawns at ()
                     SpawnDie(x, y, DieController.PTYPE_PLAYER_TWO);
-                } else {
+                } else if (line[x] == '.') {
                     // in powerwash mode, spawn "powerups" on all the tiles
+                    // (except safe tiles denoted by '-')
                     if (Globals.gameType == GameType.Powerwash) {
                         int randVal = (int)(Random.value * 6) + 1;
                         tileStates[y, x] = randVal;
