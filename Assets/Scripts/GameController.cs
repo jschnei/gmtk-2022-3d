@@ -161,7 +161,7 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
     private int totalPowerups = 0; // only used in powerwash mode
-    private int powerwashGoal = 0; // only used in powerwash mode
+    private int powerwashGoal; // only used in powerwash mode
     private int raceGoal = 10; // only used in race mode
     public bool gameFinished = false;
     [SerializeField] private float _finishDelay = 3;
@@ -186,9 +186,10 @@ public class GameController : MonoBehaviour
     //  1-6 = powerup (with this label)
     public int[,] tileStates;
 
-    void Awake() {    
-        endScreen.SetActive(false);
-
+    void Awake() {
+        if (endScreen != null) {  
+            endScreen.SetActive(false);
+        }
         LoadLevel();
 
         _dieControllers = new List<DieController>();
