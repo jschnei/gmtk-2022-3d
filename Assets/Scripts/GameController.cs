@@ -200,6 +200,9 @@ public class GameController : MonoBehaviour
     private List<DieController> _dieControllers;
     private List<DieState> _dice;
 
+    [SerializeField] private GameObject audioObject;
+    private AudioHandler audioHandler;
+
     public DieState GetDie(int id) {
         return _dice[id].CopyState();
     }
@@ -301,8 +304,8 @@ public class GameController : MonoBehaviour
         return id;
     }
 
-    void Start()
-    {
+    void Start() {
+        audioHandler = audioObject.GetComponent<AudioHandler>();
     }
 
     void Update() {
@@ -429,6 +432,7 @@ public class GameController : MonoBehaviour
             tileStates[_dice[p].posY, _dice[p].posX] = 0;
             _dice[p].IncrementPowerupCount();
             UpdateScore(_dieControllers[p].playerType, _dice[p].powerupsCollected);
+            audioHandler.PlaySound("pickup");
             CheckGameFinish();
 
             if (Globals.gameType != GameType.Powerwash) {
@@ -675,5 +679,9 @@ public class GameController : MonoBehaviour
         } else {
             return true;
         }
+    }
+    
+    public AudioHandler GetAudioHandler() {
+        return audioHandler;
     }
 }
