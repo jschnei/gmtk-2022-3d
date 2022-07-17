@@ -389,11 +389,15 @@ public class GameController : MonoBehaviour
         return (Mathf.Abs(xDelta) + Mathf.Abs(yDelta) == _dice[p].GetTop());
     }
 
-    public bool IsTargetableByAny(int x, int y) {
+    public int IsTargetableByAny(int x, int y) {
         for (int p = 0; p < _dice.Count; p++) {
-            if (IsTargetableSquare(x, y, p)) return true;
+            if (IsTargetableSquare(x, y, p)) return p;
         }
-        return false;
+        return -1;
+    }
+
+    public bool isPlayerOne(int p) {
+        return _dieControllers[p].playerType == DieController.PTYPE_PLAYER_ONE;
     }
 
     public void AttackTargets(List<Tile> targets) {
