@@ -52,7 +52,7 @@ public class ExplodeDie : MonoBehaviour
         for (int i=0; i<_faces.Length; i++) {
             Vector3 offset = new Vector3(_fv[i].x, _fv[i].y, _fv[i].z);
             _faces[i].transform.Translate(offset * Time.deltaTime);
-            Debug.Log("setting transform to " + offset*Time.deltaTime);
+            // Debug.Log("setting transform to " + offset*Time.deltaTime);
             float xAngleDelta = _fv[i].xAngle * Time.deltaTime;
             float yAngleDelta = _fv[i].yAngle * Time.deltaTime;
             float zAngleDelta = _fv[i].zAngle * Time.deltaTime;
