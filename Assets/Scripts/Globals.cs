@@ -9,4 +9,5 @@ public enum GameType {
 public static class Globals {
     public static GameType gameType;
     public static bool playVsHuman = true;
+    public static int aiDifficulty = AIPlayerController.DIFFICULTY_EASY;
 }
