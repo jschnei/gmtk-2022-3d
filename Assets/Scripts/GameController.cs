@@ -184,6 +184,9 @@ public class GameController : MonoBehaviour
         if (Globals.gameType == GameType.Race) {
             UpdateScore(DieController.PTYPE_PLAYER_ONE, 0);
             UpdateScore(DieController.PTYPE_PLAYER_TWO, 0);
+        } else if (Globals.gameType == GameType.Powerwash) {
+            UpdateScore(DieController.PTYPE_PLAYER_ONE, 0);
+            UpdateScore(DieController.PTYPE_PLAYER_TWO, 0);
         }
     }
 
@@ -202,6 +205,7 @@ public class GameController : MonoBehaviour
         gridHeight = int.Parse(dims[1]);
 
         Debug.Log(gridHeight + " " + gridWidth);
+        _floorController.InitializeFloor(gridWidth, gridHeight);
         tileStates = new int[gridHeight, gridWidth];
 
         for (int y = 0; y < gridHeight; y++)
@@ -221,12 +225,18 @@ public class GameController : MonoBehaviour
                 } else if (line[x] == '2') {
                     // player 1 spawns at ()
                     SpawnDie(x, y, DieController.PTYPE_PLAYER_TWO);
+                } else {
+                    // in powerwash mode, spawn "powerups" on all the tiles
+                    if (Globals.gameType == GameType.Powerwash) {
+                        int randVal = (int)(Random.value * 6) + 1;
+                        tileStates[y, x] = randVal;
+                        _floorController.InitializePowerup(new Tile(x, y, randVal));
+                    }
                 }
                 // tileStates[y, x] = int.Parse(pieces[x]);
             }
         }
 
-        _floorController.InitializeFloor(gridWidth, gridHeight);
     }
 
     public int RegisterDie(DieController controller) {
@@ -338,11 +348,13 @@ public class GameController : MonoBehaviour
             _dice[p].IncrementPowerupCount();
             UpdateScore(_dieControllers[p].playerType, _dice[p].totalPowerups);
 
-            int puVal = _dice[p].GetBottom();
+            if (Globals.gameType != GameType.Powerwash) {
+                int puVal = _dice[p].GetBottom();
 
-            if (!_dice[p].powered[puVal]) {
-                _dieControllers[p].ApplyPowerup(puVal);
-                _dice[p].PowerupFace(puVal);
+                if (!_dice[p].powered[puVal]) {
+                    _dieControllers[p].ApplyPowerup(puVal);
+                    _dice[p].PowerupFace(puVal);
+                }
             }
         }
     }
@@ -471,7 +483,7 @@ public class GameController : MonoBehaviour
     }
 
     public void UpdateScore(int ptype, int score) {
-        if (Globals.gameType != GameType.Race) return;
+        if (Globals.gameType != GameType.Powerwash && Globals.gameType != GameType.Race) return;
         Debug.Log("updating score with player " + ptype + " and score " + score);
         if (ptype == DieController.PTYPE_PLAYER_ONE) {
             scoreTextP1.text = score + "/10";
