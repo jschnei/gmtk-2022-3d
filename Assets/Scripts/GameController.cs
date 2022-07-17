@@ -17,12 +17,12 @@ public class DieState {
     public int totalPowerups = 0;
 
     // faces stored as [top, bottom, front, back, left, right]
-    const int D_TOP = 0;
-    const int D_BOTTOM = 1;
-    const int D_FRONT = 2;
-    const int D_BACK = 3;
-    const int D_LEFT = 4;
-    const int D_RIGHT = 5;
+    public const int D_TOP = 0;
+    public const int D_BOTTOM = 1;
+    public const int D_FRONT = 2;
+    public const int D_BACK = 3;
+    public const int D_LEFT = 4;
+    public const int D_RIGHT = 5;
     public int[] faces = {3, 4, 6, 1, 2, 5};
     public bool[] powered = {false, false, false, false, false, false, false};
 
@@ -284,12 +284,14 @@ public class GameController : MonoBehaviour
         return true;
     }
 
-    bool canMoveSquare(int x, int y) {
+    bool canMoveSquare(int x, int y, int bottomFace = 0) {
         if (!isValidSquare(x, y)) return false;
 
         foreach (DieState die in _dice) {
             if (die.posX == x && die.posY == y) return false;
         }
+
+        if (tileStates[y, x] > 0 && tileStates[y, x] != bottomFace) return false;
 
         return true;
     } 
@@ -308,8 +310,9 @@ public class GameController : MonoBehaviour
 
         int nX = _dice[p].posX + DELTA_X[dir];
         int nY = _dice[p].posY + DELTA_Y[dir];
+        int newBottomFace = GetNewBottom(dir, p);
 
-        if (!canMoveSquare(nX, nY)) return false;
+        if (!canMoveSquare(nX, nY, newBottomFace)) return false;
 
         switch (dir) {
             case DIR_UP:
@@ -489,6 +492,32 @@ public class GameController : MonoBehaviour
             scoreTextP1.text = score + "/10";
         } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
             scoreTextP2.text = score + "/10";
+        }
+    }
+
+    // Get the resulting bottom face of the dice if it were to roll in the given direction.
+    public int GetNewBottom(int dir, int p) {
+        switch (dir) {
+            case DIR_UP:
+                return _dice[p].faces[DieState.D_BACK];
+            
+            case DIR_DOWN:
+                return _dice[p].faces[DieState.D_FRONT];
+            
+            case DIR_LEFT:
+                return _dice[p].faces[DieState.D_LEFT];
+            
+            case DIR_RIGHT:
+                return _dice[p].faces[DieState.D_RIGHT];
+        }
+        return 0;
+    }
+
+    public bool IsPowerupRestricted() {
+        if (Globals.gameType == GameType.Powerwash) {
+            return false;
+        } else {
+            return true;
         }
     }
 }
