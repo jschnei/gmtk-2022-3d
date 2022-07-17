@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 public class DieController : MonoBehaviour
 {
     [SerializeField] private float _rollSpeed = 5;
     [SerializeField] private GameController _gameController;
     [SerializeField] private FloorController _floorController;
     [SerializeField] private GameObject _projectile;
+    [SerializeField] private GameObject _stunText;
 
     [SerializeField] private Material[] _standardMaterials;
     [SerializeField] private Material[] _powerupMaterials;
@@ -37,7 +40,9 @@ public class DieController : MonoBehaviour
     void Start()
     {
         id = _gameController.RegisterDie(this);
-        
+        if (_stunText != null) {
+            _stunText.SetActive(false);
+        }
         MoveToSquare(spawnX, spawnY);
     }
 
@@ -56,13 +61,7 @@ public class DieController : MonoBehaviour
     }
 
     public void HandleInput(int input) {
-        if (_isStunned) {
-            _stunTime += Time.deltaTime;
-            if (_stunTime > STUN_DURATION) {
-                Unstun();
-            }
-            return;
-        }
+        if (_isStunned) return;
         if (_isMoving) return;
 
         if (input == -1) return;
@@ -96,14 +95,25 @@ public class DieController : MonoBehaviour
     }
 
     // Update is called once per frame
-    // void Update()
-    // {
-    //     // Get projectile input
-    //     //if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
-    //     //else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
-    //     //else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
-    //     //else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
-    // }
+    void Update()
+    {
+        if (_isStunned) {
+            _stunTime += Time.deltaTime;
+            float stunTimeLeft = STUN_DURATION - _stunTime;
+            _stunText.transform.position = transform.position + (2f) * Vector3.up;
+            _stunText.transform.rotation = Quaternion.identity;
+            _stunText.GetComponent<TextMeshPro>().text = "" + Mathf.Ceil(stunTimeLeft);
+            if (_stunTime > STUN_DURATION) {
+                Unstun();
+            }
+            return;
+        }
+        // Get projectile input
+        //if (Input.GetKeyDown(KeyCode.J)) FireProjectile(Vector3.left);
+        //else if (Input.GetKeyDown(KeyCode.L)) FireProjectile(Vector3.right);
+        //else if (Input.GetKeyDown(KeyCode.I)) FireProjectile(Vector3.forward);
+        //else if (Input.GetKeyDown(KeyCode.K)) FireProjectile(Vector3.back);
+    }
 
     private IEnumerator Roll(Vector3 anchor, Vector3 axis) {
         _isMoving = true;
@@ -154,6 +164,10 @@ public class DieController : MonoBehaviour
         for (int i=1; i<=6; i++) {
             transform.Find("Face" + i).GetComponent<Renderer>().material.SetColor("_Color", new Color(0.4f, 0.4f, 0.4f, 0.9f));
         }
+        _stunText.transform.position = transform.position + (2f) * Vector3.up;
+        _stunText.transform.rotation = Quaternion.identity;
+        _stunText.GetComponent<TextMeshPro>().text = "";
+        _stunText.SetActive(true);
     }
 
     public void Unstun() {
@@ -161,5 +175,6 @@ public class DieController : MonoBehaviour
         for (int i=1; i<=6; i++) {
             transform.Find("Face" + i).GetComponent<Renderer>().material.SetColor("_Color", new Color(1, 1, 1, 0.5f));
         }
+        _stunText.SetActive(false);
     }
 }
