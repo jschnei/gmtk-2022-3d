@@ -2,7 +2,8 @@ public enum GameType {
     SinglePlayer,
     Battle,
     Race,
-    Powerwash
+    Powerwash,
+    Menu
 }
 
 public static class Globals {

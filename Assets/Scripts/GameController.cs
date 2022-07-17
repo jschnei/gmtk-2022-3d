@@ -284,6 +284,7 @@ public class GameController : MonoBehaviour
                 endScreen.SetActive(true);
             }
             if (endScreen.activeSelf && Input.GetKey(KeyCode.Escape)) {
+                Globals.gameType = GameType.Menu;
                 SceneManager.LoadScene("TitleScene");
             }
         }
