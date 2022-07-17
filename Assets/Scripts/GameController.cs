@@ -142,7 +142,8 @@ public class Tile {
 public class GameController : MonoBehaviour
 {
     [SerializeField] private FloorController _floorController;
-    [SerializeField] private TextAsset _levelData;
+    [SerializeField] private TextAsset _defaultLevelData;
+    [SerializeField] private TextAsset _raceLevelData;
 
     // public const int GRID_SIZE = 20;
 
@@ -174,7 +175,7 @@ public class GameController : MonoBehaviour
     //  1-6 = powerup (with this label)
     public int[,] tileStates;
 
-    void Awake() {       
+    void Awake() {      
         LoadLevel();
 
         _dieControllers = new List<DieController>();
@@ -187,7 +188,13 @@ public class GameController : MonoBehaviour
     }
 
     void LoadLevel() {
-        string data = _levelData.text;
+        TextAsset levelData;
+        if (Globals.gameType == GameType.Race) {
+            levelData = _raceLevelData;
+        } else {
+            levelData = _defaultLevelData;
+        }
+        string data = levelData.text;
         string[] lines = data.Split('\n');
 
         string[] dims = lines[0].Split(',');
