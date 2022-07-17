@@ -461,8 +461,8 @@ public class GameController : MonoBehaviour
         if (_dice[p].isDead) return;
 
         _dice[p].isDead = true;
-        _dice[p].posX = -1;
-        _dice[p].posY = -1;
+        // _dice[p].posX = -1;
+        // _dice[p].posY = -1;
         _dieControllers[p].Die();
     }
 

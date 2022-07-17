@@ -129,7 +129,11 @@ public class DieController : MonoBehaviour
     }
 
     public void Die() {
-        Destroy(this.gameObject);
-        Destroy(this);
+        MeshRenderer meshRenderer = transform.GetComponent<MeshRenderer>();
+        meshRenderer.enabled = false;
+        ExplodeDie exploder = transform.GetComponent<ExplodeDie>();
+        exploder.Explode();
+        // Destroy(this.gameObject);
+        // Destroy(this);
     }
 }
