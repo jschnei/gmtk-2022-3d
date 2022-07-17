@@ -24,4 +24,9 @@ public class TitleMenu : MonoBehaviour {
         Globals.gameType = GameType.Race;
         SceneManager.LoadScene("MainScene");
     }
+
+    public void PowerwashButton() {
+        Globals.gameType = GameType.Powerwash;
+        SceneManager.LoadScene("MainScene");
+    }
 }
