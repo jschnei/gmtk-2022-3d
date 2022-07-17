@@ -10,6 +10,7 @@ public class AIPlayerController : MonoBehaviour
     // [SerializeField] private int _difficulty = 0;
 
     private float _difficultyWait;
+    private float _difficultyMissAttack;
     private float _difficultyAttack;
 
     public const int DIFFICULTY_EASY = 0;
@@ -17,9 +18,9 @@ public class AIPlayerController : MonoBehaviour
     public const int DIFFICULTY_HARD = 2;
     public const int DIFFICULTY_BRUTAL = 3;
 
-    public static readonly float[] WAIT_PROBS = {0.05f, 0.1f, 0.4f, 1.0f};
-    public static readonly float[] ATTACK_PROBS = {0.2f, 0.3f, 0.6f, 1.0f};
-
+    public static readonly float[] WAIT_PROBS = {0.01f, 0.05f, 0.1f, 1.0f};
+    public static readonly float[] ATTACK_PROBS = {0.1f, 0.2f, 0.3f,  1.0f};
+    public static readonly float[] MISS_ATTACK_PROBS = {0.9f, 0.5f, 0.1f, 0.0f};
 
     private StateMachine _aiStateMachine;
 
@@ -42,6 +43,7 @@ public class AIPlayerController : MonoBehaviour
 
         _difficultyWait = WAIT_PROBS[Globals.aiDifficulty];
         _difficultyAttack = ATTACK_PROBS[Globals.aiDifficulty];
+        _difficultyMissAttack = MISS_ATTACK_PROBS[Globals.aiDifficulty];
 
         _gameController = _dieController.GetGameController();
     }
@@ -121,6 +123,10 @@ public class AIPlayerController : MonoBehaviour
             // attack if would hit
             if (Random.value > _difficultyAttack &&
                     _gameController.CanHit(_dieController.id)) {
+                return DieController.INPUT_ACTIVATE;
+            }
+
+            if (Random.value > _difficultyMissAttack) {
                 return DieController.INPUT_ACTIVATE;
             }
         }
