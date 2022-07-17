@@ -476,19 +476,22 @@ public class GameController : MonoBehaviour
 
     public void AttackPlayer(int p) {
         if (_dice[p].isDead) return;
+        if (Globals.gameType == GameType.Battle) {
+            _dice[p].GetHit();
 
-        _dice[p].GetHit();
+            AdjustHealthbar(_dieControllers[p].playerType, _dice[p].health);
+            // if (_dieControllers[p].playerType == DieController.PTYPE_PLAYER_ONE) {
+            //     AdjustHealthbar()
+            // }
+            // _dieControllers[p].AdjustHealthbar(_dice[p].health);
+            // Debug.Log("Die " + p + " hit! Health " + _dice[p].health);
 
-        AdjustHealthbar(_dieControllers[p].playerType, _dice[p].health);
-        // if (_dieControllers[p].playerType == DieController.PTYPE_PLAYER_ONE) {
-        //     AdjustHealthbar()
-        // }
-        // _dieControllers[p].AdjustHealthbar(_dice[p].health);
-        Debug.Log("Die " + p + " hit! Health " + _dice[p].health);
-
-        if (_dice[p].health == 0) {
-            KillPlayer(p);
-            CheckGameFinish();
+            if (_dice[p].health == 0) {
+                KillPlayer(p);
+                CheckGameFinish();
+            }
+        } else if (Globals.gameType == GameType.Race) {
+            _dieControllers[p].Stun();
         }
     }
 
