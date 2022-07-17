@@ -28,6 +28,10 @@ public class AIPlayerController : MonoBehaviour
         _gameController = _dieController.GetGameController();
     }
 
+    int RandomDirection() {
+        return (int)(Random.value * 4);
+    }
+
     List<int> GetNewPath() {
         List<string> bfs = new List<string>();
         Dictionary<string, string> parent = new Dictionary<string, string>();
@@ -94,8 +98,15 @@ public class AIPlayerController : MonoBehaviour
     int NextInputBFS() {
         if (_dieController.IsInactive()) return -1;
 
+        if (_gameController.IsTopActive(_dieController.id)) {
+            // attack if would hit
+            if(_gameController.CanHit(_dieController.id)) {
+                return DieController.INPUT_ACTIVATE;
+            }
+        }
+
         if (curInd >= curPath.Count) {
-            if (!_gameController.AnyPowerups()) return NextInputRandom();
+            if (!_gameController.AnyPowerups()) return RandomDirection();
 
             curPath = GetNewPath();
             curInd = 0;
@@ -103,7 +114,7 @@ public class AIPlayerController : MonoBehaviour
 
         if (curPath.Count == 0) {
             // no path, move randomly;
-            return NextInputRandom();
+            return RandomDirection();
         } 
 
         int move = curPath[curInd];

@@ -456,6 +456,23 @@ public class GameController : MonoBehaviour
         _floorController.ExplodeTiles(targets);
     }
 
+    public bool CanHit(int p) {
+        List<Tile> targets = GetTiles(_dice[p].GetTop(), p);
+
+        foreach (Tile tile in targets) {
+            for(int q = 0; q < _dice.Count; q++) {
+                if (_dice[q].isDead) continue;
+                bool playerOnTile = _dice[q].posX == tile.x && _dice[q].posY == tile.y;
+                bool movingPlayerWasOnTile = _dieControllers[q].IsMoving() && _dice[q].prevPosX == tile.x && _dice[q].prevPosY == tile.y;
+                if (playerOnTile || movingPlayerWasOnTile) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public bool IsTopActive(int p) {
         if (_dice[p].isDead) return false;
 
