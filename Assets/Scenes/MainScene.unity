@@ -214,6 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dieController: {fileID: 371916202}
+  _gameController: {fileID: 0}
   aiType: 1
 --- !u!114 &371916202
 MonoBehaviour:
@@ -231,6 +232,7 @@ MonoBehaviour:
   _gameController: {fileID: 3385918}
   _floorController: {fileID: 2102572143}
   _projectile: {fileID: 4930401841867257341, guid: 56d623b0c8a2b034dbd73c5fc6afdfe9, type: 3}
+  _stunText: {fileID: 0}
   _standardMaterials:
   - {fileID: 0}
   - {fileID: 2100000, guid: cbf37ca66caeeb64e9818bc85ec12c09, type: 2}
@@ -250,6 +252,7 @@ MonoBehaviour:
   spawnX: 8
   spawnY: 1
   playerType: 0
+  id: 0
 --- !u!65 &371916203
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2269,6 +2272,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 7753342261453531966, guid: 07f3d77d833381949b35751d9568bbe0, type: 3}
   - {fileID: 3141617712764519775, guid: 9cf215daee6c33b49a51da7e1b15e70e, type: 3}
+  - {fileID: 3141617712764519775, guid: f2a4315a94dcc934cbb8e78b95830a6c, type: 3}
   - {fileID: 2120863489501142238, guid: 6b6cd5486f347b94989cabf186613391, type: 3}
 --- !u!1 &2115036294
 GameObject:

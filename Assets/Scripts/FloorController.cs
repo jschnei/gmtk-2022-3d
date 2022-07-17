@@ -91,7 +91,6 @@ public class FloorController : MonoBehaviour
         
         controller.spawnX = x;
         controller.spawnY = y;
-        controller.playerType = type;
 
         controller.SetupControllers();
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class AIPlayerController : MonoBehaviour
 {
     [SerializeField] private DieController _dieController;
+    [SerializeField] private GameController _gameController;
     [SerializeField] private int aiType = 1;
 
     private StateMachine _aiStateMachine;
@@ -12,11 +13,112 @@ public class AIPlayerController : MonoBehaviour
     public const int AI_NONE = 0;
     public const int AI_RANDOM = 1;
     public const int AI_RED_ENEMY = 2;
+    public const int AI_BFS = 3;
+
+    private List<int> curPath;
+    private int curInd = 0;
+    private Dictionary<string, DieState> stateLookup;
 
     // Start is called before the first frame update
     void Start()
     {
+        curPath = new List<int>();  
+        stateLookup = new Dictionary<string, DieState>(); 
+
+        _gameController = _dieController.GetGameController();
+    }
+
+    List<int> GetNewPath() {
+        Debug.Log("looking for path");
+
+        List<string> bfs = new List<string>();
+        Dictionary<string, string> parent = new Dictionary<string, string>();
+        Dictionary<string, int> parentEdge = new Dictionary<string, int>();
+
+        DieState startState = _gameController.GetDie(_dieController.id);
+        string startString = startState.Serialize();
+
+        if (!stateLookup.ContainsKey(startString)) stateLookup[startString] = startState;
         
+        parent[startString] = "";
+        parentEdge[startString] = -1;
+        bfs.Add(startString);
+
+        int bfsInd = 0;
+
+        Debug.Log("START BFS");
+
+        while (bfsInd < bfs.Count) {
+            string curString = bfs[bfsInd];
+            bfsInd++;
+
+            Debug.Log(bfsInd + " " + curString);
+
+            DieState curState = stateLookup[curString];
+            
+            if (_gameController.IsTargetState(curState)) {
+                // found good state, return the path to this state
+
+                List<int> path = new List<int>();
+                while (curString != startString) {
+                    path.Add(parentEdge[curString]);
+                    curString = parent[curString];
+                }
+
+                path.Reverse();
+
+                Debug.Log("found path to state of length " + path.Count);
+                Debug.Log("Path " + path);
+
+                return path;
+            }
+
+            // try rolling in each of four directions
+
+            DieState[] nxtStates = {curState.CopyState(), curState.CopyState(), curState.CopyState(), curState.CopyState()};
+
+            nxtStates[DieController.INPUT_UP].RollUp();
+            nxtStates[DieController.INPUT_DOWN].RollDown();
+            nxtStates[DieController.INPUT_LEFT].RollLeft();
+            nxtStates[DieController.INPUT_RIGHT].RollRight();
+
+            for (int i=0;i<4;i++) {
+                string nxtString = nxtStates[i].Serialize();
+                if (_gameController.IsValidState(nxtStates[i]) &&
+                        !parent.ContainsKey(nxtString)) {
+                    
+                    if(!stateLookup.ContainsKey(nxtString)) stateLookup[nxtString] = nxtStates[i];
+
+                    parent[nxtString] = curString;
+                    parentEdge[nxtString] = i;
+
+                    bfs.Add(nxtString);
+                }
+            }
+        }
+
+        return new List<int>();
+    }
+
+    int NextInputBFS() {
+        if (_dieController.IsInactive()) return -1;
+
+        if (curInd >= curPath.Count) {
+            if (!_gameController.AnyPowerups()) return NextInputRandom();
+
+            curPath = GetNewPath();
+            curInd = 0;
+        }
+
+        if (curPath.Count == 0) {
+            // no path, move randomly;
+            return NextInputRandom();
+        } 
+
+        int move = curPath[curInd];
+        curInd++;
+
+        return move;
     }
 
     int NextInputRedEnemy() {
@@ -40,6 +142,8 @@ public class AIPlayerController : MonoBehaviour
                 return NextInputRandom();
             case AI_RED_ENEMY:
                 return NextInputRedEnemy();
+            case AI_BFS:
+                return NextInputBFS();
             case AI_NONE:
             default:
                 return -1;

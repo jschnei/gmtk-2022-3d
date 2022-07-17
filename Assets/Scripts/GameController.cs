@@ -127,6 +127,28 @@ public class DieState {
     public void GetHit() {
         health--;
     }
+
+    // copies just relevant fields of state for BFS computation
+    public DieState CopyState() {
+        DieState nstate = new DieState();
+
+        nstate.posX = posX;
+        nstate.posY = posY;
+        for (int i=0;i<6;i++) nstate.faces[i] = faces[i];
+
+        return nstate;
+    }
+
+    // used for AI purposes
+    public string Serialize() {
+        string ans = posX + "," + posY + ",";
+        for (int i=0;i<6;i++) {
+            ans += faces[i] + ",";
+        }
+
+        return ans;
+    }
+
 }
 
 public class Tile {
@@ -177,6 +199,10 @@ public class GameController : MonoBehaviour
 
     private List<DieController> _dieControllers;
     private List<DieState> _dice;
+
+    public DieState GetDie(int id) {
+        return _dice[id].CopyState();
+    }
 
     // public List<DieState> _enemyDice;
 
@@ -234,13 +260,16 @@ public class GameController : MonoBehaviour
                     tileStates[y, x] = -1;
                 } else if (line[x] == 'R') {
                     // make new red enemy at (x, y)
-                    SpawnDie(x, y, DieController.PTYPE_ENEMY);
+                    SpawnDie(x, y, DieController.DTYPE_RED_ENEMY);
                 } else if (line[x] == '1') {
                     // player 1 spawns at ()
-                    SpawnDie(x, y, DieController.PTYPE_PLAYER_ONE);
+                    SpawnDie(x, y, DieController.DTYPE_PLAYER_ONE);
                 } else if (line[x] == '2') {
                     // player 1 spawns at ()
-                    SpawnDie(x, y, DieController.PTYPE_PLAYER_TWO);
+
+                    // TODO: check whether to spawn AI based on settings
+                    // SpawnDie(x, y, DieController.DTYPE_PLAYER_TWO);
+                    SpawnDie(x, y, DieController.DTYPE_PLAYER_TWO_AI);
                 } else if (line[x] == '.') {
                     // in powerwash mode, spawn "powerups" on all the tiles
                     // (except safe tiles denoted by '-')
@@ -251,7 +280,6 @@ public class GameController : MonoBehaviour
                         totalPowerups += 1;
                     }
                 }
-                // tileStates[y, x] = int.Parse(pieces[x]);
             }
         }
         powerwashGoal = (totalPowerups + 1) / 2;
@@ -316,7 +344,15 @@ public class GameController : MonoBehaviour
         return true;
     }
 
-    bool canMoveSquare(int x, int y, int bottomFace = 0) {
+    public bool IsValidState(DieState die) {
+        return CanMoveSquare(die.posX, die.posY, die.faces[DieState.D_BOTTOM]);
+    }
+
+    public bool IsTargetState(DieState die) {
+        return (tileStates[die.posY, die.posX] > 0);
+    }
+
+    public bool CanMoveSquare(int x, int y, int bottomFace = 0) {
         if (!isValidSquare(x, y)) return false;
 
         foreach (DieState die in _dice) {
@@ -330,7 +366,7 @@ public class GameController : MonoBehaviour
 
     public bool MovePlayerToSquare(int x, int y, int p) {
         if (_dice[p].isDead) return false;
-        if (!canMoveSquare(x, y)) return false;
+        if (!CanMoveSquare(x, y)) return false;
 
         _dice[p].SetPosition(x,  y);
 
@@ -345,7 +381,7 @@ public class GameController : MonoBehaviour
         int nY = _dice[p].posY + DELTA_Y[dir];
         int newBottomFace = GetNewBottom(dir, p);
 
-        if (!canMoveSquare(nX, nY, newBottomFace)) return false;
+        if (!CanMoveSquare(nX, nY, newBottomFace)) return false;
 
         switch (dir) {
             case DIR_UP:
@@ -373,6 +409,16 @@ public class GameController : MonoBehaviour
 
     public void FinishRoll(int p) {
         _dice[p].ClearPreviousPosition();
+    }
+
+    public bool AnyPowerups() {
+        for (int y=0;y<gridHeight;y++) {
+            for (int x=0;x<gridWidth;x++) {
+                if (tileStates[y,x] > 0) return true;
+            }
+        }
+
+        return false;
     }
 
     public void CheckPowerup(int p) {

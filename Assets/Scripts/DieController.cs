@@ -17,13 +17,19 @@ public class DieController : MonoBehaviour
 
     [SerializeField] public int spawnX;
     [SerializeField] public int spawnY;
+
     [SerializeField] public int playerType;
 
     public const int PTYPE_PLAYER_ONE = 1;
     public const int PTYPE_PLAYER_TWO = 2;
     public const int PTYPE_ENEMY = 3;
 
-    private int id;
+    public const int DTYPE_PLAYER_ONE = 1;
+    public const int DTYPE_PLAYER_TWO = 2;
+    public const int DTYPE_PLAYER_TWO_AI = 3;
+    public const int DTYPE_RED_ENEMY = 4;
+
+    public int id;
     private bool _isMoving;
 
     private bool _isStunned = false;
@@ -34,6 +40,10 @@ public class DieController : MonoBehaviour
     {
         _floorController = GameObject.Find("Floor").GetComponent<FloorController>();
         _gameController = GameObject.Find("GameController").GetComponent<GameController>();
+    }
+
+    public GameController GetGameController() {
+        return _gameController;
     }
 
     // Start is called before the first frame update
@@ -58,6 +68,10 @@ public class DieController : MonoBehaviour
 
     public bool IsMoving() {
         return _isMoving;
+    }
+
+    public bool IsInactive() {
+        return (_isMoving || _isStunned);
     }
 
     public void HandleInput(int input) {
