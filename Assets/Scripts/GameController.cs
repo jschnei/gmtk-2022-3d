@@ -162,7 +162,7 @@ public class GameController : MonoBehaviour
 
     private int totalPowerups = 0; // only used in powerwash mode
     private int powerwashGoal = 0; // only used in powerwash mode
-    private int raceGoal = 0; // only used in race mode
+    private int raceGoal = 10; // only used in race mode
     public bool gameFinished = false;
     [SerializeField] private float _finishDelay = 3;
     private float _finishTimer = 0;
@@ -514,10 +514,11 @@ public class GameController : MonoBehaviour
                 FinishGame();
                 UpdateWinnerText(_dieControllers[indexAlive].playerType);
             }
-        } else if (Globals.gameType == GameType.Powerwash) {
+        } else if (Globals.gameType == GameType.Powerwash || Globals.gameType == GameType.Race) {
             int winningPlayer = -1;
+            int goal = Globals.gameType == GameType.Powerwash ? powerwashGoal : raceGoal;
             for (int i=0; i<_dice.Count; i++) {
-                if (_dice[i].powerupsCollected >= powerwashGoal) {
+                if (_dice[i].powerupsCollected >= goal) {
                     winningPlayer = i;
                 }
             }
