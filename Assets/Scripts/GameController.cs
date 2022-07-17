@@ -270,9 +270,11 @@ public class GameController : MonoBehaviour
                 } else if (line[x] == '2') {
                     // player 1 spawns at ()
 
-                    // TODO: check whether to spawn AI based on settings
-                    // SpawnDie(x, y, DieController.DTYPE_PLAYER_TWO);
-                    SpawnDie(x, y, DieController.DTYPE_PLAYER_TWO_AI);
+                    if (Globals.playVsHuman) {
+                        SpawnDie(x, y, DieController.DTYPE_PLAYER_TWO);
+                    } else {
+                        SpawnDie(x, y, DieController.DTYPE_PLAYER_TWO_AI);
+                    }
                 } else if (line[x] == '.') {
                     // in powerwash mode, spawn "powerups" on all the tiles
                     // (except safe tiles denoted by '-')

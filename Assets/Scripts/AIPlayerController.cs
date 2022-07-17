@@ -7,7 +7,7 @@ public class AIPlayerController : MonoBehaviour
     [SerializeField] private DieController _dieController;
     [SerializeField] private GameController _gameController;
     [SerializeField] private int aiType = 1;
-    [SerializeField] private int _difficulty = 0;
+    // [SerializeField] private int _difficulty = 0;
 
     private float _difficultyWait;
     private float _difficultyAttack;
@@ -40,8 +40,8 @@ public class AIPlayerController : MonoBehaviour
         curPath = new List<int>();  
         stateLookup = new Dictionary<string, DieState>(); 
 
-        _difficultyWait = WAIT_PROBS[_difficulty];
-        _difficultyAttack = ATTACK_PROBS[_difficulty];
+        _difficultyWait = WAIT_PROBS[Globals.aiDifficulty];
+        _difficultyAttack = ATTACK_PROBS[Globals.aiDifficulty];
 
         _gameController = _dieController.GetGameController();
     }

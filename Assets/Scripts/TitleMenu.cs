@@ -29,4 +29,27 @@ public class TitleMenu : MonoBehaviour {
         Globals.gameType = GameType.Powerwash;
         SceneManager.LoadScene("MainScene");
     }
+
+    public void HumanToggle() {
+        Globals.playVsHuman = true;
+    }
+    public void AIToggle() {
+        Globals.playVsHuman = false;
+    }
+
+    public void SetDifficultyEasy() {
+        Globals.aiDifficulty = AIPlayerController.DIFFICULTY_EASY;
+    }
+
+    public void SetDifficultyMedium() {
+        Globals.aiDifficulty = AIPlayerController.DIFFICULTY_MEDIUM;
+    }
+
+    public void SetDifficultyHard() {
+        Globals.aiDifficulty = AIPlayerController.DIFFICULTY_HARD;
+    }
+
+    public void SetDifficultyBrutal() {
+        Globals.aiDifficulty = AIPlayerController.DIFFICULTY_BRUTAL;
+    }
 }
