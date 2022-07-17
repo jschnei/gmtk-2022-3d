@@ -155,6 +155,7 @@ MonoBehaviour:
   _floorController: {fileID: 2102572143}
   _defaultLevelData: {fileID: 4900000, guid: 6a51396543723bd4f8ef062968b18658, type: 3}
   _raceLevelData: {fileID: 4900000, guid: cc09ad24cfff55d458bc93fb15828e6e, type: 3}
+  _powerwashLevelData: {fileID: 4900000, guid: bf8bb881d43ec244d836cfabeec3cbb1, type: 3}
   gridWidth: 0
   gridHeight: 0
   healthBarP1: {fileID: 1361758251}
