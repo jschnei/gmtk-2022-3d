@@ -19,6 +19,10 @@ public class AudioHandler : MonoBehaviour
     public void PlaySound(string soundName) {
         if (soundName == "pickup") {
             transform.Find("Pickup").GetComponent<AudioSource>().Play();
+        } else if (soundName == "usePowerup") {
+            transform.Find("UsePowerup").GetComponent<AudioSource>().Play();
+        } else if (soundName == "hit") {
+            transform.Find("Hit").GetComponent<AudioSource>().Play();       
         }
     }
 }

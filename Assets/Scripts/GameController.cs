@@ -305,7 +305,9 @@ public class GameController : MonoBehaviour
     }
 
     void Start() {
-        audioHandler = audioObject.GetComponent<AudioHandler>();
+        if (audioObject != null) {
+            audioHandler = audioObject.GetComponent<AudioHandler>();
+        }
     }
 
     void Update() {
@@ -432,7 +434,7 @@ public class GameController : MonoBehaviour
             tileStates[_dice[p].posY, _dice[p].posX] = 0;
             _dice[p].IncrementPowerupCount();
             UpdateScore(_dieControllers[p].playerType, _dice[p].powerupsCollected);
-            audioHandler.PlaySound("pickup");
+            PlaySound("pickup");
             CheckGameFinish();
 
             if (Globals.gameType != GameType.Powerwash) {
@@ -454,6 +456,7 @@ public class GameController : MonoBehaviour
         _dieControllers[p].UnapplyPowerup(_dice[p].GetTop());
         _dice[p].PowerdownFace(_dice[p].GetTop());
         _floorController.UpdateTargets();
+        PlaySound("usePowerup");
 
         List<Tile> targets = GetTiles(_dice[p].GetTop(), p);
         AttackTargets(targets);
@@ -546,6 +549,7 @@ public class GameController : MonoBehaviour
         if (_dice[p].isDead) return;
         if (Globals.gameType == GameType.Battle) {
             _dice[p].GetHit();
+            PlaySound("hit");
 
             AdjustHealthbar(_dieControllers[p].playerType, _dice[p].health);
             // if (_dieControllers[p].playerType == DieController.PTYPE_PLAYER_ONE) {
@@ -683,5 +687,10 @@ public class GameController : MonoBehaviour
     
     public AudioHandler GetAudioHandler() {
         return audioHandler;
+    }
+
+    public void PlaySound(string sound) {
+        if (Globals.gameType == GameType.Menu) return;
+        audioHandler.PlaySound(sound);
     }
 }
