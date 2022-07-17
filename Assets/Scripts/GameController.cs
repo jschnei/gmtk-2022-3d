@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -14,7 +15,7 @@ public class DieState {
 
     public int health = MAX_HEALTH;
     public bool isDead = false;
-    public int totalPowerups = 0;
+    public int powerupsCollected = 0;
 
     // faces stored as [top, bottom, front, back, left, right]
     public const int D_TOP = 0;
@@ -108,7 +109,7 @@ public class DieState {
     }
 
     public void IncrementPowerupCount() {
-        totalPowerups += 1;
+        powerupsCollected += 1;
     }
 
     public void PowerupFace(int face) {
@@ -159,11 +160,20 @@ public class GameController : MonoBehaviour
     public static readonly int[] DELTA_X = {0, 0, -1, 1};
     public static readonly int[] DELTA_Y = {-1, 1, 0, 0};
 
+    private int totalPowerups = 0; // only used in powerwash mode
+    private int powerwashGoal = 0; // only used in powerwash mode
+    private int raceGoal = 10; // only used in race mode
+    public bool gameFinished = false;
+    [SerializeField] private float _finishDelay = 3;
+    private float _finishTimer = 0;
+
     // TODO: move to UI controller?
     [SerializeField] private Image healthBarP1;
     [SerializeField] private Image healthBarP2;
     [SerializeField] private TextMeshProUGUI scoreTextP1;
     [SerializeField] private TextMeshProUGUI scoreTextP2;
+    [SerializeField] private GameObject endScreen;
+    [SerializeField] private TextMeshProUGUI winText;
 
     private List<DieController> _dieControllers;
     private List<DieState> _dice;
@@ -176,7 +186,9 @@ public class GameController : MonoBehaviour
     //  1-6 = powerup (with this label)
     public int[,] tileStates;
 
-    void Awake() {      
+    void Awake() {    
+        endScreen.SetActive(false);
+
         LoadLevel();
 
         _dieControllers = new List<DieController>();
@@ -235,11 +247,13 @@ public class GameController : MonoBehaviour
                         int randVal = (int)(Random.value * 6) + 1;
                         tileStates[y, x] = randVal;
                         _floorController.InitializePowerup(new Tile(x, y, randVal));
+                        totalPowerups += 1;
                     }
                 }
                 // tileStates[y, x] = int.Parse(pieces[x]);
             }
         }
+        powerwashGoal = (totalPowerups + 1) / 2;
 
     }
 
@@ -260,6 +274,18 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+    }
+
+    void Update() {
+        if (gameFinished) {
+            _finishTimer += Time.deltaTime;
+            if (_finishTimer > _finishDelay && !endScreen.activeSelf) {
+                endScreen.SetActive(true);
+            }
+            if (endScreen.activeSelf && Input.GetKey(KeyCode.Escape)) {
+                SceneManager.LoadScene("TitleScene");
+            }
+        }
     }
 
     public const int SPAWN_RETRIES = 10;
@@ -311,6 +337,7 @@ public class GameController : MonoBehaviour
 
     public bool PlayerRoll(int dir, int p) {
         if (_dice[p].isDead) return false;
+        if (gameFinished) return false;
 
         int nX = _dice[p].posX + DELTA_X[dir];
         int nY = _dice[p].posY + DELTA_Y[dir];
@@ -353,7 +380,8 @@ public class GameController : MonoBehaviour
             _floorController.RemovePowerup(_dice[p].posX, _dice[p].posY);
             tileStates[_dice[p].posY, _dice[p].posX] = 0;
             _dice[p].IncrementPowerupCount();
-            UpdateScore(_dieControllers[p].playerType, _dice[p].totalPowerups);
+            UpdateScore(_dieControllers[p].playerType, _dice[p].powerupsCollected);
+            CheckGameFinish();
 
             if (Globals.gameType != GameType.Powerwash) {
                 int puVal = _dice[p].GetBottom();
@@ -369,6 +397,7 @@ public class GameController : MonoBehaviour
     public void ActivatePowerup(int p) {
         if (_dice[p].isDead) return;
         if (!IsTopActive(p)) return;
+        if (gameFinished) return;
 
         _dieControllers[p].UnapplyPowerup(_dice[p].GetTop());
         _dice[p].PowerdownFace(_dice[p].GetTop());
@@ -458,6 +487,7 @@ public class GameController : MonoBehaviour
 
         if (_dice[p].health == 0) {
             KillPlayer(p);
+            CheckGameFinish();
         }
     }
 
@@ -468,6 +498,42 @@ public class GameController : MonoBehaviour
         // _dice[p].posX = -1;
         // _dice[p].posY = -1;
         _dieControllers[p].Die();
+    }
+
+    public void CheckGameFinish() {
+        if (Globals.gameType == GameType.Battle) {
+            int numAlive = 0;
+            int indexAlive = 0;
+            for (int i=0; i<_dice.Count; i++) {
+                if (!_dice[i].isDead) {
+                    numAlive += 1;
+                    indexAlive = i;
+                }
+            }
+            if (numAlive == 1) {
+                FinishGame();
+                UpdateWinnerText(_dieControllers[indexAlive].playerType);
+            }
+        } else if (Globals.gameType == GameType.Powerwash || Globals.gameType == GameType.Race) {
+            int winningPlayer = -1;
+            int goal = Globals.gameType == GameType.Powerwash ? powerwashGoal : raceGoal;
+            for (int i=0; i<_dice.Count; i++) {
+                if (_dice[i].powerupsCollected >= goal) {
+                    winningPlayer = i;
+                }
+            }
+            if (winningPlayer != -1) {
+                for (int i=0; i<_dice.Count; i++) {
+                    if (i != winningPlayer) KillPlayer(i);
+                }
+                FinishGame();
+                UpdateWinnerText(_dieControllers[winningPlayer].playerType);
+            }
+        }
+    }
+
+    public void FinishGame() {
+        gameFinished = true;
     }
 
     // Gets all valid tiles at the given Manhattan
@@ -494,12 +560,26 @@ public class GameController : MonoBehaviour
     }
 
     public void UpdateScore(int ptype, int score) {
-        if (Globals.gameType != GameType.Powerwash && Globals.gameType != GameType.Race) return;
-        Debug.Log("updating score with player " + ptype + " and score " + score);
+        int targetScore = 0;
+        if (Globals.gameType == GameType.Powerwash) {
+            targetScore = powerwashGoal;
+        } else if (Globals.gameType == GameType.Race) {
+            targetScore = raceGoal;
+        } else {
+            return; // not a score-based game mode
+        }
         if (ptype == DieController.PTYPE_PLAYER_ONE) {
-            scoreTextP1.text = score + "/10";
+            scoreTextP1.text = score + "/" + targetScore;
         } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
-            scoreTextP2.text = score + "/10";
+            scoreTextP2.text = score + "/" + targetScore;
+        }
+    }
+
+    public void UpdateWinnerText(int ptype) {
+        if (ptype == DieController.PTYPE_PLAYER_ONE) {
+            winText.text = "Player 1 wins!";
+        } else if (ptype == DieController.PTYPE_PLAYER_TWO) {
+            winText.text = "Player 2 wins!";
         }
     }
 
