@@ -2576,6 +2576,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad379bccbdc480e419f34292b524db51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _difficultyText: {fileID: 1628536186}
+  _difficultyToggleGroup: {fileID: 1327921474}
 --- !u!1 &1269806843
 GameObject:
   m_ObjectHideFlags: 0

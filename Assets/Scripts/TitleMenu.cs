@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class TitleMenu : MonoBehaviour {
+    [SerializeField] private GameObject _difficultyText;
+    [SerializeField] private GameObject _difficultyToggleGroup;
     
     // Start is called before the first frame update
     void Start()
     {
+        _difficultyText.SetActive(false);
+        _difficultyToggleGroup.SetActive(false);
     }
 
     public void SinglePlayerButton() {
@@ -32,9 +36,13 @@ public class TitleMenu : MonoBehaviour {
 
     public void HumanToggle() {
         Globals.playVsHuman = true;
+        _difficultyText.SetActive(false);
+        _difficultyToggleGroup.SetActive(false);
     }
     public void AIToggle() {
         Globals.playVsHuman = false;
+        _difficultyText.SetActive(true);
+        _difficultyToggleGroup.SetActive(true);
     }
 
     public void SetDifficultyEasy() {
