@@ -16,7 +16,7 @@ public class FloorController : MonoBehaviour
     [SerializeField] private GameObject[] _diePrefabs;
 
     Timer _spawnTimer;
-    public const int SPAWN_INTERVAL = 5;
+    public const int SPAWN_INTERVAL = 7;
 
     private GameObject[,] powerups;
     private GameObject[,] walls;
