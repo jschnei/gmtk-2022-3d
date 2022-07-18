@@ -121,12 +121,12 @@ public class AIPlayerController : MonoBehaviour
 
         if (_gameController.IsTopActive(_dieController.id)) {
             // attack if would hit
-            if (Random.value > _difficultyAttack &&
+            if (Random.value < _difficultyAttack &&
                     _gameController.CanHit(_dieController.id)) {
                 return DieController.INPUT_ACTIVATE;
             }
 
-            if (Random.value > _difficultyMissAttack) {
+            if (Random.value < _difficultyMissAttack) {
                 return DieController.INPUT_ACTIVATE;
             }
         }
